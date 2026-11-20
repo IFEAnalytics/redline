@@ -12,7 +12,7 @@
       "sentence": "6월 근원 CPI는 전년 동월 대비 2.6% 올랐다.",
       "series": "CPILFESL",
       "transform": "yoy",
-      "true": 2.5658
+      "true": 2.6
     },
     {
       "kind": "rule",

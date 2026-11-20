@@ -12,7 +12,7 @@
       "sentence": "6월 소비자물가지수(CPI)는 전년 동월 대비 3.5% 올랐다.",
       "series": "CPIAUCSL",
       "transform": "yoy",
-      "true": 3.4635
+      "true": 3.5
     },
     {
       "kind": "rule",
