@@ -8,6 +8,7 @@ import threading
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
 from pydantic import BaseModel
 
@@ -32,6 +33,7 @@ def _load_env() -> None:
 
 _load_env()
 app = FastAPI(title="Redline", version=__version__)
+app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
 class ReviewIn(BaseModel):
