@@ -1,0 +1,110 @@
+name: Redline live validation
+on:
+  push:
+    branches: ['audit/liner-live-20261121']
+    paths: ['.github/workflows/liner-live-audit.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pytest -q tests
+      - name: Run the two comparison arms and the official CPI case
+        env:
+          LINER_API_KEY: ${{ secrets.LINER_API_KEY }}
+          PYTHONUNBUFFERED: '1'
+        shell: python
+        run: |
+          import sys
+          sys.path.insert(0, ".")
+          import json
+          import logging
+          import os
+          import time
+          from collections import Counter
+          from concurrent.futures import ThreadPoolExecutor
+          from pathlib import Path
+          
+          from eval.run import baseline, score_case
+          from redline.liner import Liner
+          from redline.pipeline import review
+          
+          output = Path(os.environ["RUNNER_TEMP"]) / "redline-evidence"
+          output.mkdir(exist_ok=True)
+          cases = [json.loads(p.read_text()) for p in sorted(Path("eval/cases").glob("*.json"))]
+          assert len(cases) == 16
+          assert os.getenv("LINER_API_KEY"), "LINER_API_KEY is missing in the job environment"
+          
+          def timed(call, client):
+              start = time.monotonic()
+              try:
+                  return {"result": call(client), "ok": True}
+              except Exception as error:
+                  logging.error("Call failed (%s)", type(error).__name__)
+                  return {"ok": False, "error_type": type(error).__name__}
+              finally:
+                  client.elapsed = round(time.monotonic() - start, 2)
+          
+          def invoke(call):
+              client = Liner()
+              record = timed(call, client)
+              record.update(seconds=client.elapsed, usage=client.usage.as_dict())
+              return record
+          
+          def run_case(case):
+              current = invoke(lambda client: review(case["text"], "research", liner=client, as_of=case["as_of"]))
+              other = invoke(lambda client: baseline(case, client))
+              entry = {"id": case["id"], "redline": current, "baseline": other}
+              for arm in (current, other):
+                  arm["scored"] = score_case(case, arm["result"]) if arm["ok"] else []
+              (output / (case["id"] + ".json")).write_text(json.dumps(entry, ensure_ascii=False, indent=2))
+              print("CASE", case["id"], current["ok"], current["seconds"], other["ok"], flush=True)
+              return entry
+          
+          started = time.monotonic()
+          with ThreadPoolExecutor(max_workers=3) as pool:
+              records = list(pool.map(run_case, cases))
+          elapsed = round(time.monotonic() - started, 2)
+          reference = "미국 물가 점검\n\n미국 노동통계국(BLS)이 발표한 2026년 7월 미국 소비자물가지수(CPI)는 전년 동월 대비 3.4% 상승했다."
+          cpi = invoke(lambda client: review(reference, "research", liner=client, as_of="2026-11-20"))
+          (output / "official-july-cpi.json").write_text(json.dumps(cpi, ensure_ascii=False, indent=2))
+          
+          def stats_for(name):
+              rows = [row for rec in records for row in rec[name]["scored"]]
+              def tally(kinds, field):
+                  group = [r for r in rows if r["kind"] in kinds]
+                  return [sum(bool(r.get(field)) for r in group), len(group)]
+              return {"success": sum(rec[name]["ok"] for rec in records),
+                      "calls": {k: sum(rec[name]["usage"][k] for rec in records) for k in ("model_calls","search_calls","prompt_tokens","completion_tokens")},
+                      "numeric": tally(("fact_value","fact_basis"),"caught"),
+                      "fact_search": tally(("fact_search",),"caught"),
+                      "rule": tally(("rule",),"caught"), "exact": tally(("rule",),"exact"),
+                      "false_alarm": tally(("control","control_search"),"false_alarm"),
+                      "valid_numbers": tally(("control",),"confirmed"),
+                      "valid_primary": sum(r["confirmed"] and r["primary"] for r in rows if r["kind"]=="control"),
+                      "valid_definitions": tally(("control_search",),"confirmed")}
+          summary = {arm:stats_for(arm) for arm in ("redline","baseline")}
+          summary.update(elapsed=elapsed, base_commit="a95517c265bb6171075dfa9b41934a175df576e7",
+                         per_case=[{"id":r["id"], **{k:r["redline"]["usage"][k] for k in ("model_calls","search_calls")}, "seconds":r["redline"]["seconds"], "baseline_s":r["baseline"]["seconds"]} for r in records],
+                         claim_methods=dict(Counter(c.get("method") for r in records for c in r["redline"].get("result",{}).get("claims",[]))),
+                         july=[{k:c.get(k) for k in ("series_id","period","value","status","method","observed","reason")} for c in cpi.get("result",{}).get("claims",[])],
+                         july_ok=cpi["ok"])
+          (output / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2))
+          print("AUDIT_SUMMARY",json.dumps(summary, ensure_ascii=False))
+          assert all(r[arm]["ok"] for r in records for arm in ("redline","baseline")) and cpi["ok"], "Incomplete live runs; inspect the saved evidence."
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: redline-live-evidence
+          path: ${{ runner.temp }}/redline-evidence
+          retention-days: 14
+          if-no-files-found: warn
