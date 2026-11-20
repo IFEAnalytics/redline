@@ -1,0 +1,20 @@
+# 1차 통계 대조용 시리즈 목록 — FRED 공개 CSV(키 불필요)로 받는다.
+# transforms: level(수준) · yoy(전년 동월/동기 대비 %) · mom(전월/전기 대비 %) · chg(전월/전기 대비 증감, 단위 그대로) · saar(전기 대비 연율 %)
+source: "FRED, Federal Reserve Bank of St. Louis (https://fred.stlouisfed.org)"
+series:
+  - {id: CPIAUCSL, name: "미국 소비자물가지수(CPI, 헤드라인)", en: "US CPI all items", freq: M, transforms: [yoy, mom], agency: BLS}
+  - {id: CPILFESL, name: "미국 근원 CPI(식품·에너지 제외)", en: "US core CPI", freq: M, transforms: [yoy, mom], agency: BLS}
+  - {id: PCEPI, name: "미국 PCE 물가지수(헤드라인)", en: "US PCE price index", freq: M, transforms: [yoy, mom], agency: BEA}
+  - {id: PCEPILFE, name: "미국 근원 PCE 물가지수", en: "US core PCE price index", freq: M, transforms: [yoy, mom], agency: BEA}
+  - {id: PPIFIS, name: "미국 생산자물가지수(PPI, 최종수요)", en: "US PPI final demand", freq: M, transforms: [yoy, mom], agency: BLS}
+  - {id: UNRATE, name: "미국 실업률", en: "US unemployment rate", freq: M, transforms: [level, chg], unit: "%", agency: BLS}
+  - {id: PAYEMS, name: "미국 비농업 취업자 수(천 명)", en: "US nonfarm payrolls, thousands", freq: M, transforms: [chg, level], unit: "천 명", agency: BLS}
+  - {id: FEDFUNDS, name: "미국 연방기금 실효금리(월평균)", en: "Effective federal funds rate, monthly average", freq: M, transforms: [level], unit: "%", agency: FRB}
+  - {id: DFEDTARU, name: "연준 정책금리 목표범위 상단", en: "Fed funds target range upper limit", freq: D, transforms: [level], unit: "%", agency: FRB}
+  - {id: DGS10, name: "미국 국채 10년물 금리", en: "US 10-year Treasury yield", freq: D, transforms: [level], unit: "%", agency: FRB}
+  - {id: DGS2, name: "미국 국채 2년물 금리", en: "US 2-year Treasury yield", freq: D, transforms: [level], unit: "%", agency: FRB}
+  - {id: GDPC1, name: "미국 실질 GDP", en: "US real GDP", freq: Q, transforms: [saar, yoy], agency: BEA}
+  - {id: INDPRO, name: "미국 산업생산지수", en: "US industrial production", freq: M, transforms: [yoy, mom], agency: FRB}
+  - {id: RSAFS, name: "미국 소매판매", en: "US retail sales", freq: M, transforms: [yoy, mom], agency: Census}
+  - {id: DCOILWTICO, name: "WTI 원유 현물가(달러/배럴)", en: "WTI crude oil spot", freq: D, transforms: [level], unit: "달러", agency: EIA}
+  - {id: DEXKOUS, name: "원/달러 환율", en: "KRW per USD", freq: D, transforms: [level], unit: "원", agency: FRB}
