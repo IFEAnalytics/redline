@@ -137,14 +137,14 @@ def review(text: str, pack_id: str = "research", liner: Liner | None = None,
             if c["type"] == "stat" and c["series_id"] and c["transform"] and c["period"] and c["value"] is not None:
                 try:
                     o = stats.observe(c["series_id"], c["transform"], c["period"])
-                    verdict, diff = stats.compare(c["value"], o.value, c["transform"])
                     meta = stats.catalog()["series"][c["series_id"]]
+                    verdict, diff = stats.compare(c["value"], o.value, c["transform"], loose=meta.get("source") == "oecd")
                     out.update(method="primary-data", observed=o.as_dict(), diff=diff,
                                status="confirmed" if verdict == "match" else "mismatch",
-                               reason=(f"1차 통계({meta['agency']}, FRED {c['series_id']})로 다시 계산한 값은 "
+                               reason=(f"1차 통계({meta['agency']}, {'OECD' if meta.get('source') == 'oecd' else 'FRED'} {c['series_id']})로 다시 계산한 값은 "
                                        f"{o.value:.2f}{o.unit}이다. 원고는 {c['value']:g}{o.unit}."),
-                               sources=[{"title": f"FRED {c['series_id']} — {meta['name']}", "url": o.url,
-                                         "host": "fred.stlouisfed.org", "snippet": o.detail, "date": o.date}],
+                               sources=[{"title": f"{c['series_id']} — {meta['name']}", "url": o.url,
+                                         "host": "data-explorer.oecd.org" if meta.get("source") == "oecd" else "fred.stlouisfed.org", "snippet": o.detail, "date": o.date}],
                                fix=None if verdict == "match" else f"{o.value:.1f}{o.unit} ({o.detail})")
                     return out
                 except ValueError as e:

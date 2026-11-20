@@ -1,6 +1,7 @@
-# 1차 통계 대조용 시리즈 목록 — FRED 공개 CSV(키 불필요)로 받는다.
+# 1차 통계 대조용 시리즈 목록 — FRED 공개 CSV와 OECD 공개 SDMX API로 받는다(둘 다 키 불필요).
+# source 가 없으면 FRED(id 가 FRED 시리즈 id). source: oecd 이면 flow·key 로 OECD Data Explorer 에서 받는다.
 # transforms: level(수준) · yoy(전년 동월/동기 대비 %) · mom(전월/전기 대비 %) · chg(전월/전기 대비 증감, 단위 그대로) · saar(전기 대비 연율 %)
-source: "FRED, Federal Reserve Bank of St. Louis (https://fred.stlouisfed.org)"
+source: "FRED, Federal Reserve Bank of St. Louis (https://fred.stlouisfed.org) · OECD Data Explorer (https://data-explorer.oecd.org)"
 series:
   - {id: CPIAUCSL, name: "미국 소비자물가지수(CPI, 헤드라인)", en: "US CPI all items", freq: M, transforms: [yoy, mom], agency: BLS}
   - {id: CPILFESL, name: "미국 근원 CPI(식품·에너지 제외)", en: "US core CPI", freq: M, transforms: [yoy, mom], agency: BLS}
@@ -18,3 +19,10 @@ series:
   - {id: RSAFS, name: "미국 소매판매", en: "US retail sales", freq: M, transforms: [yoy, mom], agency: Census}
   - {id: DCOILWTICO, name: "WTI 원유 현물가(달러/배럴)", en: "WTI crude oil spot", freq: D, transforms: [level], unit: "달러", agency: EIA}
   - {id: DEXKOUS, name: "원/달러 환율", en: "KRW per USD", freq: D, transforms: [level], unit: "원", agency: FRB}
+  # ── 한국 (2026-11-20 추가). 원자료는 국가데이터처·한국은행, 수록처는 OECD·FRED ──
+  - {id: KR_CPI, name: "한국 소비자물가지수(CPI, 헤드라인)", en: "Korea CPI all items", freq: M, transforms: [yoy, mom], agency: "국가데이터처", source: oecd, flow: "OECD.SDD.TPS,DSD_PRICES@DF_PRICES_ALL,1.0", key: "KOR.M.N.CPI.IX._T.N._Z"}
+  - {id: KR_CORE_CPI, name: "한국 근원 CPI(식료품·에너지 제외, OECD 방식)", en: "Korea core CPI ex food and energy", freq: M, transforms: [yoy, mom], agency: "국가데이터처", source: oecd, flow: "OECD.SDD.TPS,DSD_PRICES@DF_PRICES_ALL,1.0", key: "KOR.M.N.CPI.IX._TXCP01_NRG.N._Z"}
+  - {id: KR_GDP_QOQ, name: "한국 실질 GDP 성장률(전기 대비 %, 이미 증가율이므로 변환은 level)", en: "Korea real GDP growth QoQ", freq: Q, transforms: [level], unit: "%", agency: "한국은행", source: oecd, flow: "OECD.SDD.NAD,DSD_NAMAIN1@DF_QNA_EXPENDITURE_GROWTH_OECD,1.1", key: "Q.Y.KOR.S1.S1.B1GQ._Z._Z._Z.PC.L.G1.T0102"}
+  - {id: KR_GDP_YOY, name: "한국 실질 GDP 성장률(전년 동기 대비 %, 이미 증가율이므로 변환은 level)", en: "Korea real GDP growth YoY", freq: Q, transforms: [level], unit: "%", agency: "한국은행", source: oecd, flow: "OECD.SDD.NAD,DSD_NAMAIN1@DF_QNA_EXPENDITURE_GROWTH_OECD,1.1", key: "Q.Y.KOR.S1.S1.B1GQ._Z._Z._Z.PC.L.GY.T0102"}
+  - {id: LRHUTTTTKRM156S, name: "한국 실업률(계절조정)", en: "Korea unemployment rate, SA", freq: M, transforms: [level, chg], unit: "%", agency: "국가데이터처"}
+  - {id: IRLTLT01KRM156N, name: "한국 국고채 10년물 금리(월평균)", en: "Korea 10-year government bond yield, monthly average", freq: M, transforms: [level], unit: "%", agency: "한국은행"}

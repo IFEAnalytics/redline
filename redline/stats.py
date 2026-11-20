@@ -17,6 +17,7 @@ import yaml
 
 CATALOG = Path(__file__).resolve().parent.parent / "rulepacks" / "series.yaml"
 FRED_CSV = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={id}&cosd={start}"
+OECD_CSV = "https://sdmx.oecd.org/public/rest/data/{flow}/{key}?startPeriod=2015-01"
 
 
 @lru_cache(maxsize=1)
@@ -35,23 +36,41 @@ def catalog_prompt() -> str:
 
 @lru_cache(maxsize=64)
 def fetch(series_id: str) -> tuple[tuple[str, float], ...]:
-    """(날짜, 값) 오름차순. 결측('.')은 뺀다."""
+    """(날짜, 값) 오름차순. 결측은 뺀다. 목록의 source 에 따라 FRED 또는 OECD 에서 받는다."""
+    meta = catalog()["series"].get(series_id, {})
     last = None
     for attempt in range(3):
         try:
-            r = requests.get(FRED_CSV.format(id=series_id, start="2015-01-01"), timeout=40)
-            r.raise_for_status()
-            rows = []
-            for row in list(csv.reader(io.StringIO(r.text)))[1:]:
-                if len(row) >= 2 and row[1] not in (".", ""):
-                    rows.append((row[0], float(row[1])))
+            rows = _fetch_oecd(meta) if meta.get("source") == "oecd" else _fetch_fred(series_id)
             if rows:
-                return tuple(rows)
+                return tuple(sorted(rows))
             last = RuntimeError("빈 응답")
         except Exception as e:  # noqa: BLE001 — 통계 서버 오류는 '대조 불가'로 넘긴다
             last = e
         time.sleep(1.5 * (attempt + 1))
-    raise RuntimeError(f"FRED {series_id} 조회 실패: {last}")
+    raise RuntimeError(f"통계 {series_id} 조회 실패: {last}")
+
+
+def _fetch_fred(series_id: str) -> list[tuple[str, float]]:
+    r = requests.get(FRED_CSV.format(id=series_id, start="2015-01-01"), timeout=40)
+    r.raise_for_status()
+    return [(row[0], float(row[1])) for row in list(csv.reader(io.StringIO(r.text)))[1:]
+            if len(row) >= 2 and row[1] not in (".", "")]
+
+
+def _fetch_oecd(meta: dict) -> list[tuple[str, float]]:
+    r = requests.get(OECD_CSV.format(flow=meta["flow"], key=meta["key"]), timeout=60,
+                     headers={"Accept": "application/vnd.sdmx.data+csv"})
+    r.raise_for_status()
+    out = []
+    for row in csv.DictReader(io.StringIO(r.text)):
+        t, v = row.get("TIME_PERIOD", ""), row.get("OBS_VALUE", "")
+        if not t or v in ("", "NaN"):
+            continue
+        m = re.fullmatch(r"(\d{4})-Q([1-4])", t)
+        date = f"{m.group(1)}-{(int(m.group(2)) - 1) * 3 + 1:02d}-01" if m else f"{t}-01"
+        out.append((date, float(v)))
+    return out
 
 
 def parse_period(p: str) -> tuple[str, str] | None:
@@ -158,18 +177,24 @@ def observe(series_id: str, transform: str, period: str) -> Observed:
             val, unit, detail = ((v / v0) ** 4 - 1) * 100, "%", f"({d} {v:g} ÷ {d0} {v0:g})^4 − 1"
     else:
         raise ValueError(transform)
-    return Observed(series_id, transform, period, d, round(val, 4), unit, detail,
-                    f"https://fred.stlouisfed.org/series/{series_id}")
+    url = ("https://data-explorer.oecd.org/" if meta.get("source") == "oecd"
+           else f"https://fred.stlouisfed.org/series/{series_id}")
+    return Observed(series_id, transform, period, d, round(val, 4), unit, detail, url)
 
 
 def _month_end(date: str) -> str:
     return date[:8] + "31"
 
 
-def compare(claimed: float, observed: float, transform: str) -> tuple[str, float]:
-    """(판정, 차이). 반올림 한 자리 차이는 일치로 본다."""
+def compare(claimed: float, observed: float, transform: str, loose: bool = False) -> tuple[str, float]:
+    """(판정, 차이). 반올림 한 자리 차이는 일치로 본다.
+
+    loose: 기준연도를 바꿔 다시 낸 지수(OECD 수록분)로 계산한 증가율은 공식 발표치와 0.1%p 까지 어긋날 수 있어 폭을 넓힌다.
+    """
     diff = claimed - observed
-    tol = 0.06 if transform in ("yoy", "mom", "saar") else max(0.011, abs(observed) * 0.002)
+    tol = (0.11 if loose else 0.06) if transform in ("yoy", "mom", "saar") else max(0.011, abs(observed) * 0.002)
+    if loose and transform == "level":
+        tol = max(tol, 0.06)
     if transform == "chg" and abs(observed) > 20:  # 취업자 증감(천 명) 같은 큰 단위
         tol = max(1.5, abs(observed) * 0.02)
     return ("match" if abs(diff) <= tol else "mismatch"), round(diff, 4)
