@@ -78,3 +78,31 @@ def test_daily_series_requires_evidence_for_requested_period():
     assert stats.display_value(point) == "4.94"
     assert stats.compare(float(stats.display_value(point)), point.value, "level")[0] == "match"
     assert stats.compare(159700, 160000, "level")[0] == "mismatch"
+
+
+@pytest.mark.parametrize("claimed, observed, places", [(3.4, 3.347, 1), (0.2, 0.145, 1), (3.42, 3.3648, 2), (3.40, 3.3648, 2)])
+def test_rounding_cannot_certify_a_different_printed_value(claimed, observed, places):
+    assert stats.compare(claimed, observed, "yoy", places=places)[0] == "mismatch"
+
+
+def test_period_must_match_frequency_and_as_of():
+    for sid, period in [("UNRATE", "2026-Q3"), ("GDPC1", "2026-08"), ("UNRATE", "2026-09-15")]:
+        with pytest.raises(ValueError, match="관측 주기"):
+            stats.observe(sid, "level" if sid == "UNRATE" else "yoy", period)
+    with pytest.raises(ValueError, match="끝나지"):
+        stats.observe("UNRATE", "level", "2026-09", as_of="2026-09-15")
+
+
+def test_missing_prior_and_core_nsa(monkeypatch):
+    monkeypatch.setattr(stats, "fetch", {"CPILFENS": (("2026-07-01", 337.133),)}.__getitem__)
+    with pytest.raises(ValueError, match="비교 시점"):
+        stats.observe("CPILFESL", "yoy", "2026-07")
+    monkeypatch.setattr(stats, "fetch", {"CPILFENS": (("2025-07-01", 328.980), ("2026-07-01", 337.133))}.__getitem__)
+    o = stats.observe("CPILFESL", "yoy", "2026-07")
+    assert o.series_id == "CPILFENS" and stats.display_value(o) == "2.5"
+
+
+def test_explicit_trailing_zero_and_oecd_near_match():
+    from redline.pipeline import _decimal_places
+    assert _decimal_places(3.4, "물가는 3.40% 올랐다.", 3.4) == 2
+    assert stats.compare(3.4, 3.347, "yoy", loose=True, places=1)[0] == "near"

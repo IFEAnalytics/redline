@@ -134,6 +134,8 @@ def main() -> int:
                             "fact_search": rate("fact_search", "caught", brows),
                             "search_false_alarm": rate("control_search", "false_alarm", brows),
                             "control_marked": rate("control", "marked", brows)}}
+    if revision := os.environ.get("REDLINE_EVAL_REVISION"):
+        summary["revision"] = revision
     (HERE / "results.json").write_text(json.dumps({"summary": summary, "rows": rows, "baseline_rows": brows}, ensure_ascii=False, indent=2), encoding="utf-8")
     (HERE / "RESULTS.md").write_text(render(summary, rows), encoding="utf-8")
     print(render(summary, rows).split("## 놓친")[0])
@@ -172,6 +174,8 @@ def render(s: dict, rows: list[dict]) -> str:
            "- 오류를 심은 사람과 도구를 만든 사람이 같다. 남이 쓴 실제 원고에서의 성능은 이 표보다 낮을 수 있다.",
            "- 모델 응답이 실행마다 조금씩 달라 숫자는 재실행하면 몇 건씩 움직인다.", "",
            "## 놓친 것과 잘못 짚은 것", ""]
+    if s.get("revision"):
+        out[2:2] = [f"검증한 제품 커밋 `{s['revision']}`", ""]
     miss = [r for r in rows if not r["kind"].startswith("control") and not r["caught"]]
     fa = [r for r in rows if r["kind"].startswith("control") and r.get("false_alarm")]
     for r in miss:

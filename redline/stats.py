@@ -11,6 +11,7 @@ import io
 import re
 import time
 from dataclasses import dataclass
+from decimal import Decimal, ROUND_HALF_UP
 from functools import lru_cache
 from pathlib import Path
 
@@ -134,17 +135,18 @@ def observe(series_id: str, transform: str, period: str, *, adjustment=None, as_
             raise ValueError("계절조정 기준을 확인할 수 없습니다")
         if adjustment == "nsa" or (adjustment is None and transform == "yoy"):
             series_id = meta["unadjusted_id"]
-    rows = fetch(series_id)
     freq = meta["freq"]
+    if grain != freq and (freq, grain) != ("D", "M"):
+        raise ValueError("원고의 기간 단위가 통계의 관측 주기와 다릅니다")
+    target = dt.date.fromisoformat(date)
+    if grain in ("M", "Q"):
+        last_month = target.month + (2 if grain == "Q" else 0)
+        target = target.replace(month=last_month, day=calendar.monthrange(target.year, last_month)[1])
+    cutoff = dt.date.fromisoformat(as_of) if as_of else dt.date.today()
+    if target > cutoff:
+        raise ValueError("원고 기준일에 해당 기간이 끝나지 않았습니다")
+    rows = fetch(series_id)
     if freq == "D":
-        target = dt.date.fromisoformat(date)
-        if grain == "M":
-            target = target.replace(day=calendar.monthrange(target.year, target.month)[1])
-        elif grain != "D":
-            raise ValueError("일별 통계에는 날짜 또는 월말을 지정해 주세요")
-        cutoff = dt.date.fromisoformat(as_of) if as_of else dt.date.today()
-        if target > cutoff:
-            raise ValueError("원고 기준일에 해당 기간이 끝나지 않았습니다")
         i = _index_on_or_before(rows, target.isoformat())
         if i is None:
             raise ValueError("해당 기간 관측 없음")
@@ -154,11 +156,6 @@ def observe(series_id: str, transform: str, period: str, *, adjustment=None, as_
         if grain == "M" and (observed_date.month != target.month or (target - observed_date).days > 4):
             raise ValueError("해당 월말의 최근 관측이 없습니다")
     else:
-        if grain == "D":
-            date = date[:8] + "01"
-        if freq == "Q":
-            y, mth = int(date[:4]), int(date[5:7])
-            date = f"{y}-{((mth - 1) // 3) * 3 + 1:02d}-01"
         i = next((k for k, (d, _) in enumerate(rows) if d == date), None)
         if i is None:
             raise ValueError(f"{period} 관측이 아직 없습니다(최근 {rows[-1][0]})")
@@ -199,22 +196,26 @@ def observe(series_id: str, transform: str, period: str, *, adjustment=None, as_
         raise ValueError(transform)
     url = ("https://data-explorer.oecd.org/" if meta.get("source") == "oecd"
            else f"https://fred.stlouisfed.org/series/{series_id}")
-    return Observed(series_id, transform, period, d, round(val, 4), unit, detail, url)
+    return Observed(series_id, transform, period, d, val, unit, detail, url)
 
 
-def display_value(observed: Observed) -> str:
+def rounded(value: float, places: int) -> Decimal:
+    return Decimal(str(value)).quantize(Decimal(1).scaleb(-places), rounding=ROUND_HALF_UP)
+
+
+def display_value(observed: Observed, places: int = 1) -> str:
     if observed.transform in ("yoy", "mom", "saar"):
-        return f"{observed.value:.1f}"
-    return f"{observed.value:.4f}".rstrip("0").rstrip(".")
+        return str(rounded(observed.value, places))
+    return str(rounded(observed.value, max(4, places))).rstrip("0").rstrip(".")
 
 
-def compare(claimed: float, observed: float, transform: str, loose: bool = False) -> tuple[str, float]:
-    """(판정, 차이). 반올림 한 자리 차이는 일치로 본다.
-
-    loose: 기준연도를 바꿔 다시 낸 지수(OECD 수록분)로 계산한 증가율은 공식 발표치와 0.1%p 까지 어긋날 수 있어 폭을 넓힌다.
-    """
-    diff = claimed - observed
-    tol = (0.11 if loose else 0.06) if transform in ("yoy", "mom", "saar") else 0.005001
-    if loose and transform == "level":
-        tol = max(tol, 0.06)
-    return ("match" if abs(diff) <= tol else "mismatch"), round(diff, 4)
+def compare(claimed: float, observed: float, transform: str, loose: bool = False,
+            places: int | None = None) -> tuple[str, float]:
+    if places is None:
+        places = max(0, -Decimal(str(claimed)).as_tuple().exponent)
+    diff = round(claimed - observed, 6)
+    if rounded(observed, places) == Decimal(str(claimed)):
+        return "match", diff
+    if loose and abs(diff) <= (0.11 if transform in ("yoy", "mom", "saar") else 0.06):
+        return "near", diff
+    return "mismatch", diff

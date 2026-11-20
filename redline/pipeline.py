@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import datetime as dt
+import math
+import re
+from decimal import Decimal
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Callable
@@ -28,7 +31,7 @@ EXTRACT_SYS = """당신은 보고서를 내보내기 전에 마지막으로 검�
 
 transform: level(수준) | yoy(전년 동월·동기 대비 %) | mom(전월·전기 대비 %) | chg(전월·전기 대비 증감) | saar(전기 대비 연율 %)
 period: 월 'YYYY-MM' · 분기 'YYYY-Qn' · 일 'YYYY-MM-DD'. 원고에 연도가 없으면 원고 기준일({today}) 이전의 가장 가까운 해로 채운다(예: 기준일이 2026-11이고 원고가 '9월'이면 2026-09). '10월 말'처럼 월만 있으면 'YYYY-MM'. 기간을 짐작할 단서가 전혀 없을 때만 null.
-value: 원고에 적힌 숫자(단위 제외, 숫자만). 취업자 증감은 천 명 단위로 바꾼다(예: 6만 명 → 60).
+value: 원고에 적힌 숫자를 문자열로 표기한다(단위 제외, 소수점 끝의 0도 보존). 취업자 증감은 천 명 단위로 바꾼다(예: 6만 명 → 60).
 미국 CPI에서 원고가 계절조정을 명시하면 adjustment=sa, 비계절조정을 명시하면 nsa, 나머지는 null.
 통계 목록에 있는 지표의 수치라면 series_id 를 반드시 채운다 — 그 주장은 검색이 아니라 통계 원자료로 대조한다. 한 문장에 수치가 둘이면 주장을 둘로 나눈다.
 '전월과 같았다' 같은 변화 서술은 transform=chg, value=0 으로 적는다.
@@ -50,7 +53,7 @@ verdict:
 - unverified: 검색 결과만으로는 확인할 수 없다
 
 JSON 객체 하나로만 답한다:
-{{"verdict":"supported","reason":"판정 이유 한두 문장(한국어)","source_index":0,"fix":"contradicted 일 때만: 고쳐 쓴 문장. 아니면 null","retry_query":"unverified 일 때만: 다시 찾아볼 더 나은 검색어(발표 기관명·자료명·연월 포함). 아니면 null"}}
+{{"verdict":"supported","reason":"판정 이유 한두 문장(한국어)","source_index":0,"evidence":"선택한 검색 결과에서 직접 인용한 구절","fix":"contradicted 일 때만: 고쳐 쓴 문장. 아니면 null","retry_query":"unverified 일 때만: 다시 찾아볼 더 나은 검색어(발표 기관명·자료명·연월 포함). 아니면 null"}}
 supported 또는 contradicted이면 evidence 필드에 선택한 검색 결과의 본문에서 직접 근거가 되는 구절을 글자 그대로 복사한다.
 source_index 는 근거로 쓴 검색 결과의 번호(0부터). 쓸 만한 것이 없으면 null.
 의견·해석·인과 주장처럼 검색으로 참거짓을 가릴 수 없는 문장은 unverified 로 두고 reason 에 '사실 확인 대상이 아니라 해석'이라고 적는다."""
@@ -101,9 +104,20 @@ def _span(text: str, quote: str) -> list[int] | None:
 
 def _to_float(v) -> float | None:
     try:
-        return float(str(v).replace(",", "").replace("%", "").strip())
+        value = float(str(v).replace(",", "").replace("%", "").strip())
+        return value if math.isfinite(value) else None
     except (TypeError, ValueError):
         return None
+
+
+def _decimal_places(raw, quote: str, value: float) -> int:
+    # Older model responses may encode a JSON number and lose trailing zeros.
+    tokens = re.findall(r"(?<![\d.])[-+]?\d[\d,]*(?:\.\d+)?", quote)
+    matched = {len(t.partition(".")[2]) for t in tokens if abs(float(t.replace(",", ""))) == abs(value)}
+    if len(matched) == 1:
+        return matched.pop()
+    number = Decimal(str(raw).replace(",", "").replace("%", "").strip())
+    return max(0, -number.as_tuple().exponent)
 
 
 def review(text: str, pack_id: str = "research", liner: Liner | None = None,
@@ -125,9 +139,11 @@ def review(text: str, pack_id: str = "research", liner: Liner | None = None,
     for k, c in enumerate((ex.get("claims") or [])[:MAX_CLAIMS]):
         if not isinstance(c, dict) or not c.get("quote"):
             continue
+        value = _to_float(c.get("value"))
         claims.append({"id": f"C{k + 1:02d}", "quote": c["quote"], "type": c.get("type") or "other",
                        "claim": c.get("claim") or c["quote"], "series_id": c.get("series_id"),
-                       "adjustment": c.get("adjustment"), "transform": c.get("transform"), "period": c.get("period"), "value": _to_float(c.get("value")),
+                       "adjustment": c.get("adjustment"), "transform": c.get("transform"), "period": c.get("period"), "value": value,
+                       "places": _decimal_places(c["value"], c["quote"], value) if value is not None else None,
                        "search_query": c.get("search_query") or c.get("claim") or c["quote"],
                        "scholar": bool(c.get("scholar")), "span": _span(text, c["quote"])})
     emit({"stage": "extract_done", "msg": f"확인할 주장 {len(claims)}건", "claims": claims})
@@ -141,14 +157,19 @@ def review(text: str, pack_id: str = "research", liner: Liner | None = None,
                     o = stats.observe(c["series_id"], c["transform"], c["period"],
                                       adjustment=c["adjustment"], as_of=as_of)
                     meta = stats.catalog()["series"][c["series_id"]]
-                    verdict, diff = stats.compare(c["value"], o.value, c["transform"], loose=meta.get("source") == "oecd")
+                    places = c["places"]
+                    verdict, diff = stats.compare(c["value"], o.value, c["transform"],
+                                                  loose=meta.get("source") == "oecd", places=places)
+                    printed = stats.display_value(o, places)
+                    status = {"match": "confirmed", "near": "unverified", "mismatch": "mismatch"}[verdict]
                     out.update(method="primary-data", series_id=o.series_id, observed=o.as_dict(), diff=diff,
-                               status="confirmed" if verdict == "match" else "mismatch",
+                               status=status,
                                reason=(f"1차 통계({meta['agency']}, {'OECD' if meta.get('source') == 'oecd' else 'FRED'} {o.series_id})로 다시 계산한 값은 "
-                                       f"{o.value:.2f}{o.unit}이다. 원고는 {c['value']:g}{o.unit}."),
+                                       f"{printed}{o.unit}이다. 원고는 {c['value']:g}{o.unit}."
+                                       + (" OECD 수록치와 근사하지만 표기 자릿수에서 일치하지 않습니다." if verdict == "near" else "")),
                                sources=[{"title": f"{o.series_id} — {meta['name']}", "url": o.url,
                                          "host": "data-explorer.oecd.org" if meta.get("source") == "oecd" else "fred.stlouisfed.org", "snippet": o.detail, "date": o.date}],
-                               fix=None if verdict == "match" else f"{stats.display_value(o)}{o.unit} ({o.detail})")
+                               fix=f"{printed}{o.unit}" if verdict == "mismatch" else None)
                     return out
                 except ValueError as e:
                     if c["series_id"] in stats.catalog()["series"]:
