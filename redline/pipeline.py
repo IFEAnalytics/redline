@@ -16,6 +16,8 @@ MAX_CLAIMS = 14
 
 EXTRACT_SYS = """당신은 보고서를 내보내기 전에 마지막으로 검토하는 선임이다. 원고에서 '사실로 확인해야 하는 문장'만 골라 주장 원장을 만든다.
 의견·전망·수사는 빼고, 틀리면 독자가 잘못 판단하게 되는 사실 주장만 고른다(최대 {max_claims}개, 중요한 순).
+문서가 스스로 정하는 내용(이 프로젝트의 기간·인원·가격·약속)과 작성자 자신의 내부 사정은 바깥 자료로 확인할 수 없으므로 고르지 않는다 — 그런 것은 규칙 검토가 따로 본다.
+이 문서 종류의 대조 범위: {scope}
 
 각 주장의 type:
 - stat: 통계 수치(물가·고용·금리·성장률 등). 아래 '통계 목록'에 해당 시리즈가 있으면 series_id·transform·period·value 를 채운다.
@@ -43,15 +45,17 @@ JUDGE_SYS = """당신은 보고서의 사실관계를 대조하는 검토자다.
 
 verdict:
 - supported: 검색 결과가 주장을 직접 뒷받침한다
-- contradicted: 검색 결과가 주장과 다른 수치·날짜·사실을 보여 준다
+- contradicted: 검색 결과가 주장과 정면으로 어긋나는 수치·날짜·정의·사실을 직접 보여 준다(표현의 강약이나 해석 차이는 해당하지 않는다)
 - unverified: 검색 결과만으로는 확인할 수 없다
 
 JSON 객체 하나로만 답한다:
-{{"verdict":"supported","reason":"판정 이유 한두 문장(한국어)","source_index":0,"fix":"contradicted 일 때만: 고쳐 쓴 문장. 아니면 null"}}
-source_index 는 근거로 쓴 검색 결과의 번호(0부터). 쓸 만한 것이 없으면 null."""
+{{"verdict":"supported","reason":"판정 이유 한두 문장(한국어)","source_index":0,"fix":"contradicted 일 때만: 고쳐 쓴 문장. 아니면 null","retry_query":"unverified 일 때만: 다시 찾아볼 더 나은 검색어(발표 기관명·자료명·연월 포함). 아니면 null"}}
+source_index 는 근거로 쓴 검색 결과의 번호(0부터). 쓸 만한 것이 없으면 null.
+의견·해석·인과 주장처럼 검색으로 참거짓을 가릴 수 없는 문장은 unverified 로 두고 reason 에 '사실 확인 대상이 아니라 해석'이라고 적는다."""
 
 RULES_SYS = """당신은 보고서를 내보내기 전에 빨간 줄을 긋는 선임 검토자다. 아래 '검토 규칙'은 실제 실수에서 나온 목록이다.
 원고를 읽고 규칙을 어긴 곳만 짚는다. 억지로 찾지 않는다 — 분명히 어긴 곳만, 최대 {max_findings}곳.
+한 구절에는 가장 중요한 규칙 하나만 적는다. '이미 짚은 사실 오류'에 있는 구절은 사실 오류로 따로 표시되므로, 같은 구절을 같은 이유로 다시 짚지 않는다.
 
 검토 규칙:
 {rules}
@@ -112,7 +116,8 @@ def review(text: str, pack_id: str = "research", liner: Liner | None = None,
 
     # 1) 주장 원장
     emit({"stage": "extract", "msg": "주장 원장을 만드는 중"})
-    ex = liner.chat_json(EXTRACT_SYS.format(max_claims=MAX_CLAIMS, catalog=stats.catalog_prompt(), today=as_of),
+    ex = liner.chat_json(EXTRACT_SYS.format(max_claims=MAX_CLAIMS, catalog=stats.catalog_prompt(), today=as_of,
+                                            scope=pack.get("claim_scope", "공개 자료로 확인할 수 있는 모든 사실 주장")),
                          f"원고:\n\n{text}", max_tokens=6000)
     claims = []
     for k, c in enumerate((ex.get("claims") or [])[:MAX_CLAIMS]):
@@ -144,15 +149,25 @@ def review(text: str, pack_id: str = "research", liner: Liner | None = None,
                     return out
                 except ValueError as e:
                     out["primary_note"] = str(e)  # 통계로 못 구하면 검색으로 넘어간다
-            results = liner.search(c["search_query"], scholar=c["scholar"], max_results=5)
-            listing = "\n".join(f"[{i}] {r['title']} ({r['host']}, {r.get('date') or '날짜 없음'})\n    {r['snippet']}"
-                                for i, r in enumerate(results)) or "(검색 결과 없음)"
-            j = liner.chat_json(JUDGE_SYS.format(today=today),
-                                f"주장: {c['claim']}\n원문 구절: {c['quote']}\n\n검색 결과:\n{listing}", max_tokens=1200)
+            query, tried, results, j = c["search_query"], [], [], {}
+            for _ in range(2):  # 확인이 안 되면 모델이 고친 검색어로 한 번 더 찾는다
+                tried.append(query)
+                found = liner.search(query, scholar=c["scholar"], max_results=6)
+                seen = {r["url"] for r in results}
+                results += [r for r in found if r["url"] not in seen]
+                listing = "\n".join(f"[{i}] {r['title']} ({r['host']}, {r.get('date') or '날짜 없음'})\n    {r['snippet']}"
+                                    for i, r in enumerate(results)) or "(검색 결과 없음)"
+                j = liner.chat_json(JUDGE_SYS.format(today=today),
+                                    f"주장: {c['claim']}\n원문 구절: {c['quote']}\n\n검색 결과:\n{listing}", max_tokens=1200)
+                retry = j.get("retry_query")
+                if j.get("verdict") != "unverified" or not retry or retry in tried:
+                    break
+                query = retry
             v = j.get("verdict")
             status = {"supported": "confirmed", "contradicted": "mismatch"}.get(v, "unverified")
             si = j.get("source_index")
             srcs = [results[si]] if isinstance(si, int) and 0 <= si < len(results) else results[:2]
+            out["queries"] = tried
             out.update(method="liner-search", status=status, reason=j.get("reason") or "", sources=srcs,
                        fix=j.get("fix") if status == "mismatch" else None)
         except Exception as e:  # noqa: BLE001 — 한 주장의 실패가 전체를 멈추지 않게
@@ -169,8 +184,9 @@ def review(text: str, pack_id: str = "research", liner: Liner | None = None,
     # 3) 규칙 검토
     emit({"stage": "rules", "msg": f"검토 규칙 {len(pack['rules'])}개를 적용하는 중"})
     rules_txt = "\n".join(f"- {r['id']} {r['name']}: {r['check']}" for r in pack["rules"])
-    rv = liner.chat_json(RULES_SYS.format(rules=rules_txt, max_findings=8), f"원고:\n\n{text}", max_tokens=4000,
-                         effort="medium")
+    flagged = "\n".join(f"- {c['quote']} ({c['reason']})" for c in checked if c["status"] == "mismatch") or "(없음)"
+    rv = liner.chat_json(RULES_SYS.format(rules=rules_txt, max_findings=6),
+                         f"이미 짚은 사실 오류:\n{flagged}\n\n원고:\n\n{text}", max_tokens=4000, effort="medium")
     by_id = {r["id"]: r for r in pack["rules"]}
     findings = []
     for k, f in enumerate(rv.get("findings") or []):

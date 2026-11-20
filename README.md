@@ -10,9 +10,15 @@
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
 cp .env.example .env        # LINER_API_KEY 만 채운다 (다른 유료 키 불필요)
-.venv/bin/python -m redline review samples/us-inflation-oct.md
+.venv/bin/uvicorn redline.server:app --port 8765     # 웹 화면: http://localhost:8765
+.venv/bin/python -m redline review samples/us-inflation-oct.md   # 명령줄
 .venv/bin/python -m pytest -q tests
 ```
+
+![검토 화면](docs/screen-research.png)
+
+규칙 묶음을 바꾸면 같은 엔진이 다른 문서를 검토한다(`rulepacks/research.yaml` 12개, `rulepacks/proposal.yaml` 6개).
+`samples/`의 원고는 시연용으로 일부러 오류를 넣은 가상 원고다.
 
 ## Liner API를 쓰는 곳
 

@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redline — 보고서가 나가기 전, 선임의 마지막 검토</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#fbfaf7; --desk:#efece6; --ink:#1d1b18; --ink2:#5c5750; --ink3:#8d877e; --line:#dcd7cd;
+  --red:#c2182b; --red-bg:#fbe6e8; --amber:#a86a00; --amber-bg:#fbf0d6; --green:#1f7a4d; --green-bg:#e3f3ea;
+  --pending:#9a958c; --card:#fff; --shadow:0 1px 2px rgba(40,30,10,.06),0 6px 20px rgba(40,30,10,.06);
+  --sans:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;
+  --serif:"Noto Serif KR","Nanum Myeongjo",Georgia,serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+button,select,input,textarea{font:inherit;color:inherit}
+header{display:flex;align-items:center;gap:16px;padding:14px 28px;background:var(--ink);color:#f4f1ea}
+.logo{font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:.2px;position:relative;padding-bottom:2px}
+.logo::after{content:"";position:absolute;left:-2px;right:-4px;bottom:1px;height:3px;background:var(--red);transform:rotate(-1.2deg);border-radius:2px}
+.tag{color:#c9c3b8;font-size:13.5px}
+.hright{margin-left:auto;display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:12px;color:#b9b3a8}
+.dot{width:8px;height:8px;border-radius:50%;background:#5fc08a;display:inline-block;margin-right:6px}
+.dot.off{background:#e06a6a}
+main{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.9fr);gap:22px;max-width:1440px;margin:0 auto;padding:22px 28px 60px;align-items:start}
+.sheet{background:var(--paper);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);min-height:560px}
+.sheet-head{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink2)}
+.sheet-head b{color:var(--ink);font-weight:600}
+.sheet-head .sp{margin-left:auto}
+textarea#src{display:block;width:100%;min-height:520px;border:0;outline:0;resize:vertical;background:transparent;padding:26px 34px;font-family:var(--serif);font-size:16.5px;line-height:1.95}
+#doc{padding:26px 34px 40px;font-family:var(--serif);font-size:16.5px;line-height:2.15;white-space:pre-wrap;word-break:keep-all}
+#doc .title{font-weight:700;font-size:21px;line-height:1.5}
+mark{background:transparent;color:inherit;cursor:pointer;border-radius:2px;padding:1px 0;transition:background .15s}
+mark.pending{border-bottom:2px dotted var(--pending)}
+mark.confirmed{border-bottom:2px solid var(--green)}
+mark.unverified{border-bottom:2px dashed var(--amber);background:var(--amber-bg)}
+mark.mismatch{background:var(--red-bg);text-decoration:underline wavy var(--red);text-decoration-thickness:1.5px;text-underline-offset:5px}
+mark.rule{border-bottom:2px solid var(--red)}
+mark.hot{outline:2px solid var(--ink);outline-offset:1px}
+sup.n{font-family:var(--mono);font-size:10.5px;font-weight:500;color:#fff;border-radius:8px;padding:1px 5px;margin:0 2px 0 1px;vertical-align:super;line-height:1;cursor:pointer}
+sup.n.pending{background:var(--pending)} sup.n.confirmed{background:var(--green)} sup.n.unverified{background:var(--amber)}
+sup.n.mismatch,sup.n.rule{background:var(--red)}
+.btn{border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:4px;padding:8px 16px;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.red{background:var(--red);border-color:var(--red)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line);font-weight:500;padding:6px 12px;font-size:13px}
+select,input[type=date]{border:1px solid var(--line);background:#fff;border-radius:4px;padding:6px 8px;font-size:13.5px}
+aside{position:sticky;top:16px;display:flex;flex-direction:column;gap:14px;max-height:calc(100vh - 32px);overflow:auto;padding-bottom:8px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);padding:16px 18px}
+.panel h2{margin:0 0 10px;font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:.3px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row label{font-size:12.5px;color:var(--ink2);display:flex;flex-direction:column;gap:4px}
+.rules{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+.rules li{font-size:13px;line-height:1.5}
+.rules .rid{font-family:var(--mono);font-size:11px;color:var(--red);margin-right:6px}
+.rules .org{display:block;color:var(--ink3);font-size:12px;padding-left:34px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.steps li{display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--ink3)}
+.steps li i{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);flex:none}
+.steps li.on{color:var(--ink)} .steps li.on i{border-color:var(--red);border-top-color:transparent;animation:spin .8s linear infinite}
+.steps li.ok{color:var(--ink2)} .steps li.ok i{border-color:var(--green);background:var(--green)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{border:1px solid var(--line);border-radius:4px;padding:9px 10px;background:var(--paper)}
+.tile b{display:block;font-family:var(--serif);font-size:24px;line-height:1.15}
+.tile span{font-size:11.5px;color:var(--ink2)}
+.tile.r b{color:var(--red)} .tile.a b{color:var(--amber)} .tile.g b{color:var(--green)}
+.overall{font-family:var(--serif);font-size:15px;line-height:1.75;margin:12px 0 0;padding:10px 12px;border-left:3px solid var(--red);background:var(--paper)}
+.usage{font-family:var(--mono);font-size:11.5px;color:var(--ink3);margin-top:10px}
+#cards{display:grid;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--pending);border-radius:4px;padding:12px 14px;box-shadow:var(--shadow);cursor:pointer}
+.card.confirmed{border-left-color:var(--green)} .card.unverified{border-left-color:var(--amber)}
+.card.mismatch,.card.rule{border-left-color:var(--red)}
+.card.hot{outline:2px solid var(--ink)}
+.chead{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11.5px;font-weight:600;border-radius:3px;padding:1px 7px}
+.badge.confirmed{background:var(--green-bg);color:var(--green)} .badge.unverified{background:var(--amber-bg);color:var(--amber)}
+.badge.mismatch,.badge.rule{background:var(--red-bg);color:var(--red)} .badge.pending{background:#eee;color:var(--ink2)}
+.chip{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);border-radius:3px;padding:1px 6px;color:var(--ink2)}
+.chip.liner{border-color:#b9c7e6;color:#2c4a8f;background:#eef3fc}
+.chip.data{border-color:#bfd8c9;color:#1f6a45;background:#eef8f2}
+.cnum{font-family:var(--mono);font-size:11px;color:var(--ink3);margin-left:auto}
+.quote{font-family:var(--serif);font-size:14px;line-height:1.7;color:var(--ink);margin:0 0 6px}
+.why{font-size:13.5px;color:var(--ink2);margin:0}
+.fix{margin:8px 0 0;font-family:var(--serif);font-size:14px;line-height:1.7;color:var(--red)}
+.fix::before{content:"→ ";font-weight:700}
+.src{margin:8px 0 0;font-size:12px;color:var(--ink3);display:grid;gap:2px}
+.src a{color:#2c4a8f;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.src a:hover{text-decoration:underline}
+.origin{margin:8px 0 0;font-size:12px;color:var(--ink3);border-top:1px dashed var(--line);padding-top:6px}
+.err{color:var(--red);font-size:13.5px}
+.hide{display:none!important}
+@media (max-width:980px){main{grid-template-columns:1fr;padding:14px 16px 40px}aside{position:static;max-height:none}.tiles{grid-template-columns:repeat(2,1fr)}header{padding:12px 16px;flex-wrap:wrap}.tag{display:none}textarea#src,#doc{padding:18px 18px}}
+@media print{header,aside .noprint,.sheet-head .sp{display:none}html,body{background:#fff}main{display:block;padding:0}.sheet,.panel,.card{box-shadow:none}aside{position:static;max-height:none;overflow:visible;margin-top:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Redline</div>
+  <div class="tag">보고서가 나가기 전, 선임의 마지막 검토</div>
+  <div class="hright"><span><span class="dot" id="keydot"></span><span id="keytxt">Liner API</span></span></div>
+</header>
+<main>
+  <section class="sheet">
+    <div class="sheet-head">
+      <b id="sheet-title">원고</b><span id="sheet-sub">초안을 붙여 넣거나 예시를 고르세요</span>
+      <span class="sp row">
+        <select id="sample" title="예시 원고"></select>
+        <button class="btn ghost hide" id="edit">원고 고치기</button>
+      </span>
+    </div>
+    <textarea id="src" spellcheck="false" placeholder="검토할 원고를 붙여 넣으세요."></textarea>
+    <div id="doc" class="hide"></div>
+  </section>
+  <aside>
+    <div class="panel noprint" id="setup">
+      <h2>검토 설정</h2>
+      <div class="row">
+        <label>규칙 묶음<select id="pack"></select></label>
+        <label>원고 기준일<input type="date" id="asof"></label>
+        <button class="btn red" id="go" style="margin-left:auto;align-self:flex-end">검토 시작</button>
+      </div>
+      <p class="err hide" id="err"></p>
+    </div>
+    <div class="panel hide" id="progress">
+      <h2>진행</h2>
+      <ol class="steps" id="steps">
+        <li data-s="extract"><i></i><span>주장 원장 만들기 — Liner 모델</span></li>
+        <li data-s="verify"><i></i><span>근거 대조 — 통계 원자료 · Liner 검색</span></li>
+        <li data-s="rules"><i></i><span>검토 규칙 적용 — Liner 모델</span></li>
+      </ol>
+    </div>
+    <div class="panel hide" id="summary">
+      <h2>검토 결과</h2>
+      <div class="tiles">
+        <div class="tile r"><b id="t-mis">0</b><span>사실 불일치</span></div>
+        <div class="tile r"><b id="t-rule">0</b><span>규칙 위반</span></div>
+        <div class="tile a"><b id="t-unv">0</b><span>확인 불가</span></div>
+        <div class="tile g"><b id="t-ok">0</b><span>확인</span></div>
+      </div>
+      <p class="overall hide" id="overall"></p>
+      <div class="usage" id="usage"></div>
+      <div class="row noprint" style="margin-top:12px">
+        <button class="btn ghost" id="dl">보고서 내려받기 (.md)</button>
+        <button class="btn ghost" id="pr">인쇄</button>
+      </div>
+    </div>
+    <div id="cards"></div>
+    <div class="panel noprint" id="rulebox">
+      <h2 id="rule-title">검토 규칙</h2>
+      <ul class="rules" id="rules"></ul>
+    </div>
+  </aside>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LABEL = {confirmed:"확인", mismatch:"불일치", unverified:"확인 불가", pending:"대조 중", rule:"규칙 위반"};
+const PRIO = {mismatch:4, rule:3, unverified:2, confirmed:1, pending:0};
+let META = null, TEXT = "", ITEMS = [], RESULT = null;
+
+async function init() {
+  META = await (await fetch("api/meta")).json();
+  $("keydot").classList.toggle("off", !META.has_key);
+  $("keytxt").textContent = META.has_key ? `Liner API · ${META.model}` : "LINER_API_KEY 없음";
+  $("pack").innerHTML = META.packs.map((p) => `<option value="${p.id}">${esc(p.name)} (${p.rules})</option>`).join("");
+  $("sample").innerHTML = `<option value="">예시 원고…</option>` + META.samples.map((s) => `<option value="${s.id}">${esc(s.title)}</option>`).join("");
+  $("asof").value = new Date().toISOString().slice(0, 10);
+  renderRules();
+}
+function renderRules() {
+  const p = META.packs.find((x) => x.id === $("pack").value);
+  $("rule-title").textContent = `검토 규칙 — ${p.name} ${p.rules}개`;
+  $("rules").innerHTML = p.rule_list.map((r) => `<li><span class="rid">${r.id}</span><b>${esc(r.name)}</b><span class="org">${esc(r.origin)}</span></li>`).join("");
+}
+$("pack").onchange = renderRules;
+$("sample").onchange = () => {
+  const s = META.samples.find((x) => x.id === $("sample").value);
+  if (!s) return;
+  showEditor(); $("src").value = s.text.trim(); $("pack").value = s.pack; renderRules();
+};
+function showEditor() {
+  $("src").classList.remove("hide"); $("doc").classList.add("hide"); $("edit").classList.add("hide"); $("sample").classList.remove("hide");
+  $("sheet-title").textContent = "원고"; $("sheet-sub").textContent = "초안을 붙여 넣거나 예시를 고르세요";
+  ["progress","summary"].forEach((i) => $(i).classList.add("hide")); $("cards").innerHTML = ""; $("rulebox").classList.remove("hide");
+  $("go").disabled = false;
+}
+$("edit").onclick = showEditor;
+
+function step(name) {
+  const order = ["extract","verify","rules"]; const k = order.indexOf(name);
+  document.querySelectorAll("#steps li").forEach((li) => {
+    const i = order.indexOf(li.dataset.s);
+    li.className = name === "done" || i < k ? "ok" : i === k ? "on" : "";
+  });
+}
+function upsert(item) {
+  const i = ITEMS.findIndex((x) => x.id === item.id);
+  if (i >= 0) ITEMS[i] = item; else ITEMS.push(item);
+}
+function renderDoc() {
+  const anns = ITEMS.filter((x) => x.span).map((x) => ({id:x.id, s:x.span[0], e:x.span[1], k:x.kind}));
+  const cuts = [...new Set([0, TEXT.length, ...anns.flatMap((a) => [a.s, a.e])])].sort((a, b) => a - b);
+  const nl = TEXT.indexOf("\n"); let html = "";
+  for (let i = 0; i < cuts.length - 1; i++) {
+    const a = cuts[i], b = cuts[i + 1]; if (a === b) continue;
+    const cover = anns.filter((x) => x.s <= a && x.e >= b);
+    let seg = esc(TEXT.slice(a, b));
+    if (nl > 0 && b <= nl) seg = `<span class="title">${seg}</span>`;
+    if (cover.length) {
+      const top = cover.reduce((m, x) => (PRIO[x.k] > PRIO[m.k] ? x : m));
+      seg = `<mark class="${top.k}" data-ids="${cover.map((x) => x.id).join(" ")}">${seg}</mark>`;
+    }
+    html += seg;
+    anns.filter((x) => x.e === b).forEach((x) => { html += `<sup class="n ${x.k}" data-ids="${x.id}">${num(x.id)}</sup>`; });
+  }
+  $("doc").innerHTML = html;
+}
+const num = (id) => ITEMS.filter((x) => x.span).sort((a, b) => a.span[0] - b.span[0] || a.id.localeCompare(b.id)).findIndex((x) => x.id === id) + 1;
+function renderCards() {
+  const sorted = [...ITEMS].sort((a, b) => (a.span ? a.span[0] : 1e9) - (b.span ? b.span[0] : 1e9) || a.id.localeCompare(b.id));
+  $("cards").innerHTML = sorted.map((x) => {
+    const n = x.span ? num(x.id) : "–";
+    if (x.kind === "rule") return `<div class="card rule" data-id="${x.id}"><div class="chead"><span class="badge rule">규칙 위반</span><span class="chip">${x.rule_id} ${esc(x.rule_name)}</span><span class="cnum">${n}</span></div>
+      <p class="quote">${esc(x.quote)}</p><p class="why">${esc(x.why)}</p>${x.fix ? `<p class="fix">${esc(x.fix)}</p>` : ""}
+      ${x.origin ? `<p class="origin">이 규칙이 생긴 실수 — ${esc(x.origin)}</p>` : ""}</div>`;
+    const how = x.kind === "pending" ? "" : x.method === "primary-data" ? `<span class="chip data">통계 원자료</span>` : `<span class="chip liner">Liner 검색</span>`;
+    const src = (x.sources || []).filter((s) => s.url).slice(0, 2).map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.host)} — ${esc(s.title)}</a>`).join("");
+    return `<div class="card ${x.kind}" data-id="${x.id}"><div class="chead"><span class="badge ${x.kind}">${LABEL[x.kind]}</span>${how}<span class="cnum">${n}</span></div>
+      <p class="quote">${esc(x.quote)}</p>${x.reason ? `<p class="why">${esc(x.reason)}</p>` : ""}${x.fix ? `<p class="fix">${esc(x.fix)}</p>` : ""}${src ? `<div class="src">${src}</div>` : ""}</div>`;
+  }).join("");
+}
+function tiles() {
+  const c = (k) => ITEMS.filter((x) => x.kind === k).length;
+  $("t-mis").textContent = c("mismatch"); $("t-rule").textContent = c("rule"); $("t-unv").textContent = c("unverified"); $("t-ok").textContent = c("confirmed");
+}
+function focus(id, from) {
+  document.querySelectorAll(".hot").forEach((e) => e.classList.remove("hot"));
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  const marks = [...document.querySelectorAll("#doc [data-ids]")].filter((m) => m.dataset.ids.split(" ").includes(id) && m.tagName === "MARK");
+  if (card) { card.classList.add("hot"); if (from === "doc") card.scrollIntoView({behavior:"smooth", block:"center"}); }
+  marks.forEach((m) => m.classList.add("hot"));
+  if (from === "card" && marks[0]) marks[0].scrollIntoView({behavior:"smooth", block:"center"});
+}
+$("doc").onclick = (e) => { const m = e.target.closest("[data-ids]"); if (m) focus(m.dataset.ids.split(" ").pop(), "doc"); };
+$("cards").onclick = (e) => { if (e.target.closest("a")) return; const c = e.target.closest(".card"); if (c) focus(c.dataset.id, "card"); };
+
+$("go").onclick = async () => {
+  TEXT = $("src").value.trim(); ITEMS = []; RESULT = null;
+  $("err").classList.add("hide");
+  if (TEXT.length < 30) { $("err").textContent = "원고를 먼저 넣어 주세요."; $("err").classList.remove("hide"); return; }
+  $("go").disabled = true; $("progress").classList.remove("hide"); $("summary").classList.add("hide"); $("rulebox").classList.add("hide");
+  $("overall").classList.add("hide"); $("cards").innerHTML = ""; step("extract");
+  $("src").classList.add("hide"); $("doc").classList.remove("hide"); $("edit").classList.remove("hide"); $("sample").classList.add("hide");
+  $("sheet-title").textContent = "검토본"; $("sheet-sub").textContent = "표시를 누르면 해당 검토 의견으로 이동합니다";
+  renderDoc();
+  try {
+    const res = await fetch("api/review", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({text:TEXT, pack:$("pack").value, as_of:$("asof").value || null})});
+    if (!res.ok) throw new Error((await res.json()).detail || res.statusText);
+    const reader = res.body.getReader(); const dec = new TextDecoder(); let buf = "";
+    for (;;) {
+      const {done, value} = await reader.read(); if (done) break;
+      buf += dec.decode(value, {stream:true});
+      let i; while ((i = buf.indexOf("\n")) >= 0) { const line = buf.slice(0, i); buf = buf.slice(i + 1); if (line.trim()) onEvent(JSON.parse(line)); }
+    }
+  } catch (e) { fail(e.message); }
+};
+function fail(msg) { $("err").textContent = "검토 중 오류: " + msg; $("err").classList.remove("hide"); $("go").disabled = false; step("none"); }
+function onEvent(ev) {
+  if (ev.stage === "error") return fail(ev.msg);
+  if (ev.stage === "extract_done") { ev.claims.forEach((c) => upsert({...c, kind:"pending"})); $("summary").classList.remove("hide"); step("verify"); }
+  else if (ev.stage === "claim") upsert({...ev.claim, kind:ev.claim.status});
+  else if (ev.stage === "rules") step("rules");
+  else if (ev.stage === "done") {
+    RESULT = ev.result; TEXT = RESULT.text;
+    RESULT.findings.forEach((f) => upsert({...f, kind:"rule"}));
+    $("overall").textContent = RESULT.overall; $("overall").classList.toggle("hide", !RESULT.overall);
+    const u = RESULT.usage, s = RESULT.summary;
+    $("usage").textContent = `Liner 모델 ${u.model_calls}회 (${u.models.join(", ")}) · Liner 검색 ${u.search_calls}회 · 통계 원자료 대조 ${s.primary_data}건`;
+    step("done"); $("go").disabled = false;
+  } else return;
+  renderDoc(); renderCards(); tiles();
+}
+$("dl").onclick = async () => {
+  if (!RESULT) return;
+  const md = await (await fetch("api/report", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(RESULT)})).text();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([md], {type:"text/markdown"})); a.download = "redline-report.md"; a.click();
+};
+$("pr").onclick = () => window.print();
+init();
+</script>
+</body>
+</html>
