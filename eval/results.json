@@ -2,12 +2,12 @@
   "summary": {
     "cases": 16,
     "failed": [],
-    "seconds": 214,
+    "seconds": 213,
     "usage": {
-      "model_calls": 75,
-      "search_calls": 43,
-      "prompt_tokens": 78026,
-      "completion_tokens": 18607
+      "model_calls": 79,
+      "search_calls": 47,
+      "prompt_tokens": 81759,
+      "completion_tokens": 19536
     },
     "model": [
       "liner-mark-1.3"
@@ -25,7 +25,7 @@
       24
     ],
     "rule_exact": [
-      22,
+      21,
       24
     ],
     "control_false_alarm": [
@@ -45,7 +45,7 @@
       8
     ],
     "search_confirmed": [
-      8,
+      6,
       8
     ],
     "control_marked": [
@@ -78,10 +78,11 @@
         8
       ],
       "control_marked": [
-        8,
+        5,
         24
       ]
-    }
+    },
+    "revision": "c57fb307de12a678029eb40d3cb97561cb1902cb"
   },
   "rows": [
     {
@@ -452,10 +453,10 @@
       "confirmed": false,
       "primary": false,
       "rules_hit": [
-        "R12"
+        "R02"
       ],
       "caught": true,
-      "exact": true,
+      "exact": false,
       "expected_rule": "R12"
     },
     {
@@ -689,7 +690,7 @@
       "kind": "rule",
       "sentence": "한 조사에 따르면 현재 기업의 12%가 AI를 쓰고 있다(2023년 조사).",
       "mismatch": false,
-      "confirmed": false,
+      "confirmed": true,
       "primary": false,
       "rules_hit": [
         "R12"
@@ -971,7 +972,7 @@
       "kind": "control_search",
       "sentence": "미국 개인소비지출(PCE) 물가지수는 상무부 경제분석국(BEA)이 발표한다.",
       "mismatch": false,
-      "confirmed": true,
+      "confirmed": false,
       "primary": false,
       "rules_hit": [],
       "false_alarm": false,
@@ -992,7 +993,7 @@
       "kind": "control_search",
       "sentence": "미국 소비자물가지수(CPI)는 노동통계국(BLS)이 매달 발표한다.",
       "mismatch": false,
-      "confirmed": true,
+      "confirmed": false,
       "primary": false,
       "rules_hit": [],
       "false_alarm": false,
@@ -1113,10 +1114,12 @@
       "case": "2026-06-activity",
       "kind": "rule",
       "sentence": "이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다.",
-      "mismatch": true,
+      "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "caught": true,
       "exact": false,
       "expected_rule": "R11"
@@ -1167,7 +1170,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "caught": false
     },
     {
@@ -1261,11 +1266,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "false_alarm": false,
-      "marked": true
+      "marked": false
     },
     {
       "case": "2026-06-prices",
@@ -1274,11 +1277,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "false_alarm": false,
-      "marked": true
+      "marked": false
     },
     {
       "case": "2026-06-prices",
@@ -1301,9 +1302,7 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "caught": false
     },
     {
@@ -1386,9 +1385,11 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "false_alarm": false,
-      "marked": false
+      "marked": true
     },
     {
       "case": "2026-07-activity",
@@ -1397,11 +1398,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "false_alarm": false,
-      "marked": true
+      "marked": false
     },
     {
       "case": "2026-07-activity",
@@ -1660,9 +1659,11 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "false_alarm": false,
-      "marked": false
+      "marked": true
     },
     {
       "case": "2026-07-rates",
@@ -1685,11 +1686,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "false_alarm": false,
-      "marked": true
+      "marked": false
     },
     {
       "case": "2026-08-activity",
@@ -1759,11 +1758,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "false_alarm": false,
-      "marked": true
+      "marked": false
     },
     {
       "case": "2026-08-jobs",
@@ -1797,17 +1794,21 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "caught": false
     },
     {
       "case": "2026-08-jobs",
       "kind": "rule",
       "sentence": "이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다.",
-      "mismatch": true,
+      "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "caught": true,
       "exact": false,
       "expected_rule": "R11"
