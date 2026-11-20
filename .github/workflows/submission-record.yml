@@ -1,0 +1,174 @@
+name: Redline submission verification and recording
+on:
+  push:
+    branches: ['audit/liner-live-20261121']
+    paths: ['.github/workflows/submission-record.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 2641723874a164ef91d8bb0df4b79c0c2fe68aae
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pytest -q tests
+      - run: |
+          python eval/build.py
+          python eval/run.py
+          mkdir -p evidence/eval
+          cp -r eval/cases eval/results.json eval/RESULTS.md evidence/eval/
+        env:
+          LINER_API_KEY: ${{ secrets.LINER_API_KEY }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: submission-eval
+          path: evidence/
+          retention-days: 14
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 2641723874a164ef91d8bb0df4b79c0c2fe68aae
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - run: |
+          sudo apt-get update -qq && sudo apt-get install -y fonts-noto-cjk
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - run: |
+          uvicorn redline.server:app --port 8765 > /tmp/redline-server.log 2>&1 &
+          for i in $(seq 1 20); do curl -sSf localhost:8765/api/meta > /dev/null && break || sleep 1; done
+        env:
+          LINER_API_KEY: ${{ secrets.LINER_API_KEY }}
+      - name: Capture actual UI and corrected manuscript
+        shell: python
+        run: |
+          import json
+          import time
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          out=Path("evidence/ui")
+          out.mkdir(parents=True,exist_ok=True)
+          with sync_playwright() as p:
+              browser=p.chromium.launch(args=["--no-sandbox"])
+              page=browser.new_page(viewport={"width":1410,"height":800}, device_scale_factor=1,locale="ko-KR")
+              page.goto("http://127.0.0.1:8765", wait_until="domcontentloaded",timeout=100000)
+              page.locator("#sample option[value=us-cpi-july]").wait_for(state="attached")
+              page.locator("#sample").select_option("us-cpi-july")
+              page.locator("#asof").fill("2026-11-20")
+              def snap(name): page.screenshot(path=out/(name+".png"),timeout=45000)
+              def roll(name,n=9):
+                  folder=out/name;folder.mkdir(exist_ok=True)
+                  for i in range(n):
+                      page.screenshot(path=folder/f"{i:03d}.png",timeout=45000)
+                      page.wait_for_timeout(80)
+              def record_review(name):
+                  page.locator("#go").hover()
+                  snap(name+"-edit")
+                  page.locator("#go").click()
+                  roll(name+"-start")
+                  page.wait_for_function("typeof RESULT !== 'undefined' && RESULT !== null",timeout=300000)
+                  data=page.evaluate("RESULT")
+                  (out/(name+".json")).write_text(json.dumps(data,ensure_ascii=False,indent=2))
+                  snap(name+"-done")
+                  return data
+              def select(item,name):
+                  card=page.locator('.card[data-id="'+item['id']+'"]')
+                  mark=page.locator('mark[data-ids~="'+item['id']+'"]').first
+                  if mark.count(): mark.click()
+                  card.scroll_into_view_if_needed()
+                  card.click()
+                  page.wait_for_timeout(650)
+                  snap(name)
+                  card.screenshot(path=out/(name+"-card.png"))
+              res=record_review("research")
+              print("Research",[(c["quote"],c["status"]) for c in res["claims"]],flush=True)
+              for name,sid,verdict in [("core","CPILFENS","mismatch"),("headline","CPIAUCNS","confirmed")]:
+                  c=next(c for c in res["claims"] if c.get("observed",{}).get("series_id")==sid and c["status"]==verdict)
+                  select(c,name)
+              item=next(c for c in res["claims"] if c["method"]=="liner-search")
+              select(item,"search")
+              # Capture the author correcting the working draft and reviewing it again.
+              page.locator("#edit").click()
+              text=page.locator("#src").input_value()
+              assert "2.9%" in text
+              page.locator("#src").fill(text.replace("2.9%","2.5%"))
+              corrected=record_review("corrected")
+              core=next(c for c in corrected["claims"] if c.get("series_id")=="CPILFENS" and c["status"]=="confirmed")
+              select(core,"accepted")
+              page.locator("#edit").click()
+              page.locator("#sample").select_option("proposal-mock")
+              res=record_review("proposal")
+              print("Proposal",[(f["rule_id"],f["quote"]) for f in res["findings"]],flush=True)
+              item=next(f for f in res["findings"] if '12주' in (f['quote']+f['why']) or '14주' in (f['quote']+f['why']))
+              select(item,"schedule")
+              browser.close()
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: submission-ui
+          path: evidence/
+          retention-days: 14
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 2641723874a164ef91d8bb0df4b79c0c2fe68aae
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - name: Record Korean narration
+        env:
+          LINER_API_KEY: ${{ secrets.LINER_API_KEY }}
+        shell: python
+        run: |
+          from concurrent.futures import ThreadPoolExecutor
+          from pathlib import Path
+          import os
+          import requests
+          out = Path("evidence/voice")
+          out.mkdir(parents=True, exist_ok=True)
+          base = "https://platform.liner.com/api/v1"
+          auth = {"x-api-key": os.environ["LINER_API_KEY"]}
+          res = requests.get(base + "/models", headers=auth, timeout=40)
+          res.raise_for_status()
+          models = res.json()["data"]
+          speech = [m for m in models if "tts" in m["id"].lower() and "gemini" in m["id"].lower()]
+          if not speech:
+              raise RuntimeError("Gemini speech model unavailable")
+          speech.sort(key=lambda m: ("pro" not in m["id"], m["id"]))
+          model = speech[0]["id"]
+          print("Narration model", model, flush=True)
+          lines = [line.split('|')[-2].strip() for line in Path("docs/video-script.md").read_text().splitlines() if line.startswith('| ')][1:]
+          assert len(lines) == 6
+          def narrate(pair):
+              i,line = pair
+              response = requests.post(base + "/audio/speech", headers=auth, json={"model":model,"voice":"Kore","input":line,"response_format":"mp3"},timeout=150)
+              response.raise_for_status()
+              assert not response.headers.get("content-type","").startswith("application/json")
+              (out / f"{i}.mp3").write_bytes(response.content)
+          with ThreadPoolExecutor(max_workers=2) as pool:
+              list(pool.map(narrate, enumerate(lines,1)))
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: submission-voice
+          path: evidence/
+          retention-days: 14
