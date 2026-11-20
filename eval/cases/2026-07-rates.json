@@ -1,0 +1,71 @@
+{
+  "id": "2026-07-rates",
+  "as_of": "2026-11-20",
+  "text": "7월 미국 금리 점검\n\n2026년 7월 미국 금리와 물가를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n미국 국채 10년물 금리는 7월 말 4.35%였다. 미국 국채 2년물 금리는 7월 말 4.28%였다. 7월 연방기금 실효금리는 월평균 3.23%였다.\n\n모든 업종에서 예외 없이 고용이 늘었다. 7월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다. 연준은 다음 회의에서 금리를 내릴 것이다.",
+  "labels": [
+    {
+      "kind": "fact_value",
+      "span": [
+        102,
+        130
+      ],
+      "sentence": "미국 국채 10년물 금리는 7월 말 4.35%였다.",
+      "series": "DGS10",
+      "transform": "level",
+      "true": 4.75,
+      "written": 4.35
+    },
+    {
+      "kind": "control",
+      "span": [
+        131,
+        158
+      ],
+      "sentence": "미국 국채 2년물 금리는 7월 말 4.28%였다.",
+      "series": "DGS2",
+      "transform": "level",
+      "true": 4.28
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        159,
+        185
+      ],
+      "sentence": "7월 연방기금 실효금리는 월평균 3.23%였다.",
+      "series": "FEDFUNDS",
+      "transform": "level",
+      "true": 3.63,
+      "written": 3.23
+    },
+    {
+      "kind": "rule",
+      "span": [
+        187,
+        209
+      ],
+      "sentence": "모든 업종에서 예외 없이 고용이 늘었다.",
+      "rule_id": "R03"
+    },
+    {
+      "kind": "control",
+      "span": [
+        210,
+        244
+      ],
+      "sentence": "7월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "series": "PCEPILFE",
+      "transform": "yoy",
+      "true": 2.9953
+    },
+    {
+      "kind": "rule",
+      "span": [
+        245,
+        268
+      ],
+      "sentence": "연준은 다음 회의에서 금리를 내릴 것이다.",
+      "rule_id": "R09"
+    }
+  ]
+}

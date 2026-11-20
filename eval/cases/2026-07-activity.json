@@ -1,0 +1,72 @@
+{
+  "id": "2026-07-activity",
+  "as_of": "2026-11-20",
+  "text": "7월 미국 실물 경기 점검\n\n2026년 7월 미국 실물 지표를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n7월 소매판매는 전월 대비 0.4% 줄었다. 미국 기업들은 일제히 가격을 올렸다. 7월 근원 CPI는 전년 동월 대비 0.2% 올랐다.\n\n7월 실업률은 4.1%였다. 같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다. 7월 산업생산지수는 전년 동월 대비 0.6% 올랐다.",
+  "labels": [
+    {
+      "kind": "control",
+      "span": [
+        104,
+        128
+      ],
+      "sentence": "7월 소매판매는 전월 대비 0.4% 줄었다.",
+      "series": "RSAFS",
+      "transform": "mom",
+      "true": -0.407
+    },
+    {
+      "kind": "rule",
+      "span": [
+        129,
+        149
+      ],
+      "sentence": "미국 기업들은 일제히 가격을 올렸다.",
+      "rule_id": "R03"
+    },
+    {
+      "kind": "fact_basis",
+      "span": [
+        150,
+        179
+      ],
+      "sentence": "7월 근원 CPI는 전년 동월 대비 0.2% 올랐다.",
+      "series": "CPILFESL",
+      "transform": "yoy",
+      "true": 2.4665,
+      "written": 0.22,
+      "note": "전월 대비 값을 전년 동월 대비로 적음"
+    },
+    {
+      "kind": "control",
+      "span": [
+        181,
+        196
+      ],
+      "sentence": "7월 실업률은 4.1%였다.",
+      "series": "UNRATE",
+      "transform": "level",
+      "true": 4.1
+    },
+    {
+      "kind": "rule",
+      "span": [
+        197,
+        237
+      ],
+      "sentence": "같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다.",
+      "rule_id": "R10"
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        238,
+        267
+      ],
+      "sentence": "7월 산업생산지수는 전년 동월 대비 0.6% 올랐다.",
+      "series": "INDPRO",
+      "transform": "yoy",
+      "true": 1.2498,
+      "written": 0.65
+    }
+  ]
+}

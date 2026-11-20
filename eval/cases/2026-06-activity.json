@@ -1,0 +1,71 @@
+{
+  "id": "2026-06-activity",
+  "as_of": "2026-11-20",
+  "text": "6월 미국 실물 경기 점검\n\n2026년 6월 미국 실물 지표를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n6월 근원 CPI는 전년 동월 대비 2.6% 올랐다. 이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다. 6월 소매판매는 전월 대비 0.2% 늘었다.\n\n6월 산업생산지수는 전년 동월 대비 2.1% 올랐다. 따라서 지금 장기 국채를 사 두어야 한다. 6월 실업률은 4.6%였다.",
+  "labels": [
+    {
+      "kind": "control",
+      "span": [
+        104,
+        133
+      ],
+      "sentence": "6월 근원 CPI는 전년 동월 대비 2.6% 올랐다.",
+      "series": "CPILFESL",
+      "transform": "yoy",
+      "true": 2.5658
+    },
+    {
+      "kind": "rule",
+      "span": [
+        134,
+        164
+      ],
+      "sentence": "이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다.",
+      "rule_id": "R11"
+    },
+    {
+      "kind": "control",
+      "span": [
+        165,
+        189
+      ],
+      "sentence": "6월 소매판매는 전월 대비 0.2% 늘었다.",
+      "series": "RSAFS",
+      "transform": "mom",
+      "true": 0.2028
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        191,
+        220
+      ],
+      "sentence": "6월 산업생산지수는 전년 동월 대비 2.1% 올랐다.",
+      "series": "INDPRO",
+      "transform": "yoy",
+      "true": 1.4671,
+      "written": 2.07
+    },
+    {
+      "kind": "rule",
+      "span": [
+        221,
+        244
+      ],
+      "sentence": "따라서 지금 장기 국채를 사 두어야 한다.",
+      "rule_id": "R11"
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        245,
+        260
+      ],
+      "sentence": "6월 실업률은 4.6%였다.",
+      "series": "UNRATE",
+      "transform": "level",
+      "true": 4.2,
+      "written": 4.6
+    }
+  ]
+}

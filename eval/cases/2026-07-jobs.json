@@ -1,0 +1,71 @@
+{
+  "id": "2026-07-jobs",
+  "as_of": "2026-11-20",
+  "text": "7월 미국 고용 점검\n\n2026년 7월 미국 고용 지표를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n7월 산업생산지수는 전년 동월 대비 1.8% 올랐다. 한 조사에 따르면 현재 기업의 12%가 AI를 쓰고 있다(2023년 조사). 평균 관세율이 내렸으므로 관세 수입 총액도 줄어든 셈이다.\n\n7월 소비자물가지수(CPI)는 전년 동월 대비 3.3% 올랐다. 7월 비농업 취업자는 전월보다 1만 명 줄었다. 7월 실업률은 4.5%였다.",
+  "labels": [
+    {
+      "kind": "fact_value",
+      "span": [
+        101,
+        130
+      ],
+      "sentence": "7월 산업생산지수는 전년 동월 대비 1.8% 올랐다.",
+      "series": "INDPRO",
+      "transform": "yoy",
+      "true": 1.2498,
+      "written": 1.85
+    },
+    {
+      "kind": "rule",
+      "span": [
+        131,
+        173
+      ],
+      "sentence": "한 조사에 따르면 현재 기업의 12%가 AI를 쓰고 있다(2023년 조사).",
+      "rule_id": "R12"
+    },
+    {
+      "kind": "rule",
+      "span": [
+        174,
+        206
+      ],
+      "sentence": "평균 관세율이 내렸으므로 관세 수입 총액도 줄어든 셈이다.",
+      "rule_id": "R05"
+    },
+    {
+      "kind": "control",
+      "span": [
+        208,
+        243
+      ],
+      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 3.3% 올랐다.",
+      "series": "CPIAUCSL",
+      "transform": "yoy",
+      "true": 3.3039
+    },
+    {
+      "kind": "control",
+      "span": [
+        244,
+        270
+      ],
+      "sentence": "7월 비농업 취업자는 전월보다 1만 명 줄었다.",
+      "series": "PAYEMS",
+      "transform": "chg",
+      "true": -10.0
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        271,
+        286
+      ],
+      "sentence": "7월 실업률은 4.5%였다.",
+      "series": "UNRATE",
+      "transform": "level",
+      "true": 4.1,
+      "written": 4.5
+    }
+  ]
+}

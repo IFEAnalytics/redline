@@ -1,0 +1,72 @@
+{
+  "id": "2026-06-prices",
+  "as_of": "2026-11-20",
+  "text": "6월 미국 물가 점검\n\n2026년 6월 미국 물가 지표를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n연준은 다음 회의에서 금리를 내릴 것이다. 6월 PCE 물가지수는 전년 동월 대비 3.5% 올랐다. 6월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.\n\n모든 업종에서 예외 없이 고용이 늘었다. 6월 소비자물가지수(CPI)는 전년 동월 대비 2.9% 올랐다. 6월 근원 CPI는 전년 동월 대비 0.0% 올랐다.",
+  "labels": [
+    {
+      "kind": "rule",
+      "span": [
+        101,
+        124
+      ],
+      "sentence": "연준은 다음 회의에서 금리를 내릴 것이다.",
+      "rule_id": "R09"
+    },
+    {
+      "kind": "control",
+      "span": [
+        125,
+        156
+      ],
+      "sentence": "6월 PCE 물가지수는 전년 동월 대비 3.5% 올랐다.",
+      "series": "PCEPI",
+      "transform": "yoy",
+      "true": 3.453
+    },
+    {
+      "kind": "control",
+      "span": [
+        157,
+        191
+      ],
+      "sentence": "6월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "series": "PCEPILFE",
+      "transform": "yoy",
+      "true": 3.0412
+    },
+    {
+      "kind": "rule",
+      "span": [
+        193,
+        215
+      ],
+      "sentence": "모든 업종에서 예외 없이 고용이 늘었다.",
+      "rule_id": "R03"
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        216,
+        251
+      ],
+      "sentence": "6월 소비자물가지수(CPI)는 전년 동월 대비 2.9% 올랐다.",
+      "series": "CPIAUCSL",
+      "transform": "yoy",
+      "true": 3.4635,
+      "written": 2.86
+    },
+    {
+      "kind": "fact_basis",
+      "span": [
+        252,
+        281
+      ],
+      "sentence": "6월 근원 CPI는 전년 동월 대비 0.0% 올랐다.",
+      "series": "CPILFESL",
+      "transform": "yoy",
+      "true": 2.5658,
+      "written": -0.02,
+      "note": "전월 대비 값을 전년 동월 대비로 적음"
+    }
+  ]
+}

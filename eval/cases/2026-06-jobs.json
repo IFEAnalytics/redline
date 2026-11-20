@@ -1,0 +1,71 @@
+{
+  "id": "2026-06-jobs",
+  "as_of": "2026-11-20",
+  "text": "6월 미국 고용 점검\n\n2026년 6월 미국 고용 지표를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n6월 소비자물가지수(CPI)는 전년 동월 대비 3.5% 올랐다. 미국 기업들은 일제히 가격을 올렸다. 6월 산업생산지수는 전년 동월 대비 1.5% 올랐다.\n\n6월 비농업 취업자는 전월보다 2만 9천 명 줄었다. 6월 실업률은 4.6%였다. 같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다.",
+  "labels": [
+    {
+      "kind": "control",
+      "span": [
+        101,
+        136
+      ],
+      "sentence": "6월 소비자물가지수(CPI)는 전년 동월 대비 3.5% 올랐다.",
+      "series": "CPIAUCSL",
+      "transform": "yoy",
+      "true": 3.4635
+    },
+    {
+      "kind": "rule",
+      "span": [
+        137,
+        157
+      ],
+      "sentence": "미국 기업들은 일제히 가격을 올렸다.",
+      "rule_id": "R03"
+    },
+    {
+      "kind": "control",
+      "span": [
+        158,
+        187
+      ],
+      "sentence": "6월 산업생산지수는 전년 동월 대비 1.5% 올랐다.",
+      "series": "INDPRO",
+      "transform": "yoy",
+      "true": 1.4671
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        189,
+        218
+      ],
+      "sentence": "6월 비농업 취업자는 전월보다 2만 9천 명 줄었다.",
+      "series": "PAYEMS",
+      "transform": "chg",
+      "true": 31.0,
+      "written": -29.0
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        219,
+        234
+      ],
+      "sentence": "6월 실업률은 4.6%였다.",
+      "series": "UNRATE",
+      "transform": "level",
+      "true": 4.2,
+      "written": 4.6
+    },
+    {
+      "kind": "rule",
+      "span": [
+        235,
+        275
+      ],
+      "sentence": "같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다.",
+      "rule_id": "R10"
+    }
+  ]
+}

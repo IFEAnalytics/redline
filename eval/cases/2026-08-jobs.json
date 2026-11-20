@@ -1,0 +1,72 @@
+{
+  "id": "2026-08-jobs",
+  "as_of": "2026-11-20",
+  "text": "8월 미국 고용 점검\n\n2026년 8월 미국 고용 지표를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n8월 비농업 취업자는 전월보다 18만 6천 명 늘었다. 따라서 지금 장기 국채를 사 두어야 한다. 8월 실업률은 4.1%였다.\n\n8월 소비자물가지수(CPI)는 전년 동월 대비 0.4% 올랐다. 이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다. 8월 산업생산지수는 전년 동월 대비 2.0% 올랐다.",
+  "labels": [
+    {
+      "kind": "control",
+      "span": [
+        101,
+        131
+      ],
+      "sentence": "8월 비농업 취업자는 전월보다 18만 6천 명 늘었다.",
+      "series": "PAYEMS",
+      "transform": "chg",
+      "true": 186.0
+    },
+    {
+      "kind": "rule",
+      "span": [
+        132,
+        155
+      ],
+      "sentence": "따라서 지금 장기 국채를 사 두어야 한다.",
+      "rule_id": "R11"
+    },
+    {
+      "kind": "control",
+      "span": [
+        156,
+        171
+      ],
+      "sentence": "8월 실업률은 4.1%였다.",
+      "series": "UNRATE",
+      "transform": "level",
+      "true": 4.1
+    },
+    {
+      "kind": "fact_basis",
+      "span": [
+        173,
+        208
+      ],
+      "sentence": "8월 소비자물가지수(CPI)는 전년 동월 대비 0.4% 올랐다.",
+      "series": "CPIAUCSL",
+      "transform": "yoy",
+      "true": 3.353,
+      "written": 0.4,
+      "note": "전월 대비 값을 전년 동월 대비로 적음"
+    },
+    {
+      "kind": "rule",
+      "span": [
+        209,
+        239
+      ],
+      "sentence": "이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다.",
+      "rule_id": "R11"
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        240,
+        269
+      ],
+      "sentence": "8월 산업생산지수는 전년 동월 대비 2.0% 올랐다.",
+      "series": "INDPRO",
+      "transform": "yoy",
+      "true": 1.4472,
+      "written": 2.05
+    }
+  ]
+}

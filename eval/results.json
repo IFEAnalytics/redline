@@ -1,0 +1,2140 @@
+{
+  "summary": {
+    "cases": 16,
+    "failed": [],
+    "seconds": 237,
+    "usage": {
+      "model_calls": 79,
+      "search_calls": 47,
+      "prompt_tokens": 76206,
+      "completion_tokens": 18623
+    },
+    "model": [
+      "liner-mark-1.3"
+    ],
+    "fact_value": [
+      18,
+      18
+    ],
+    "fact_basis": [
+      6,
+      6
+    ],
+    "rule": [
+      24,
+      24
+    ],
+    "rule_exact": [
+      19,
+      24
+    ],
+    "control_false_alarm": [
+      0,
+      24
+    ],
+    "control_confirmed": [
+      24,
+      24
+    ],
+    "fact_search": [
+      8,
+      8
+    ],
+    "search_false_alarm": [
+      0,
+      8
+    ],
+    "search_confirmed": [
+      7,
+      8
+    ],
+    "control_marked": [
+      0,
+      24
+    ],
+    "baseline": {
+      "fact_value": [
+        0,
+        18
+      ],
+      "fact_basis": [
+        0,
+        6
+      ],
+      "rule": [
+        24,
+        24
+      ],
+      "control_false_alarm": [
+        0,
+        24
+      ],
+      "fact_search": [
+        8,
+        8
+      ],
+      "search_false_alarm": [
+        0,
+        8
+      ],
+      "control_marked": [
+        7,
+        24
+      ]
+    }
+  },
+  "rows": [
+    {
+      "case": "2026-06-activity",
+      "kind": "control",
+      "sentence": "6월 근원 CPI는 전년 동월 대비 2.6% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "rule",
+      "sentence": "이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R11"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R11"
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "control",
+      "sentence": "6월 소매판매는 전월 대비 0.2% 늘었다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "fact_value",
+      "sentence": "6월 산업생산지수는 전년 동월 대비 2.1% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "rule",
+      "sentence": "따라서 지금 장기 국채를 사 두어야 한다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R11"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R11"
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "fact_value",
+      "sentence": "6월 실업률은 4.6%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "control",
+      "sentence": "6월 소비자물가지수(CPI)는 전년 동월 대비 3.5% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "rule",
+      "sentence": "미국 기업들은 일제히 가격을 올렸다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R03"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R03"
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "control",
+      "sentence": "6월 산업생산지수는 전년 동월 대비 1.5% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "fact_value",
+      "sentence": "6월 비농업 취업자는 전월보다 2만 9천 명 줄었다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "fact_value",
+      "sentence": "6월 실업률은 4.6%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "rule",
+      "sentence": "같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R10"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R10"
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "rule",
+      "sentence": "연준은 다음 회의에서 금리를 내릴 것이다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R09"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R09"
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "control",
+      "sentence": "6월 PCE 물가지수는 전년 동월 대비 3.5% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "control",
+      "sentence": "6월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "rule",
+      "sentence": "모든 업종에서 예외 없이 고용이 늘었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R03"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R03"
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "fact_value",
+      "sentence": "6월 소비자물가지수(CPI)는 전년 동월 대비 2.9% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "fact_basis",
+      "sentence": "6월 근원 CPI는 전년 동월 대비 0.0% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "fact_value",
+      "sentence": "미국 국채 2년물 금리는 6월 말 3.74%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "rule",
+      "sentence": "금리가 내린 주에 소비가 늘었으므로 금리 인하가 소비를 살린 것이 분명하다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R10"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R10"
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "control",
+      "sentence": "6월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "rule",
+      "sentence": "시장에서는 내년 성장률을 1.4%로 보고 있다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R01"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R01"
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "fact_value",
+      "sentence": "6월 연방기금 실효금리는 월평균 4.03%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "control",
+      "sentence": "미국 국채 10년물 금리는 6월 말 4.44%였다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "control",
+      "sentence": "7월 소매판매는 전월 대비 0.4% 줄었다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "rule",
+      "sentence": "미국 기업들은 일제히 가격을 올렸다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R03"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R03"
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "fact_basis",
+      "sentence": "7월 근원 CPI는 전년 동월 대비 0.2% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "control",
+      "sentence": "7월 실업률은 4.1%였다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "rule",
+      "sentence": "같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [
+        "R10"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R10"
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "fact_value",
+      "sentence": "7월 산업생산지수는 전년 동월 대비 0.6% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "fact_value",
+      "sentence": "7월 산업생산지수는 전년 동월 대비 1.8% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "rule",
+      "sentence": "한 조사에 따르면 현재 기업의 12%가 AI를 쓰고 있다(2023년 조사).",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R02"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R12"
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "rule",
+      "sentence": "평균 관세율이 내렸으므로 관세 수입 총액도 줄어든 셈이다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R05"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R05"
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "control",
+      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 3.3% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "control",
+      "sentence": "7월 비농업 취업자는 전월보다 1만 명 줄었다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "fact_value",
+      "sentence": "7월 실업률은 4.5%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "control",
+      "sentence": "7월 근원 CPI는 전년 동월 대비 2.5% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "rule",
+      "sentence": "두 회사가 양해각서를 맺었으므로 공급은 이미 시작됐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R04"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R04"
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "fact_basis",
+      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 0.1% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "control",
+      "sentence": "7월 PCE 물가지수는 전년 동월 대비 3.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "fact_value",
+      "sentence": "7월 근원 PCE 물가지수는 전년 동월 대비 2.4% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "rule",
+      "sentence": "생산자물가의 trade services는 무역 서비스의 가격을 뜻한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R06"
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "fact_value",
+      "sentence": "미국 국채 10년물 금리는 7월 말 4.35%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "control",
+      "sentence": "미국 국채 2년물 금리는 7월 말 4.28%였다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "fact_value",
+      "sentence": "7월 연방기금 실효금리는 월평균 3.23%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "rule",
+      "sentence": "모든 업종에서 예외 없이 고용이 늘었다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R03"
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "control",
+      "sentence": "7월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "rule",
+      "sentence": "연준은 다음 회의에서 금리를 내릴 것이다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R09"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R09"
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "control",
+      "sentence": "8월 산업생산지수는 전년 동월 대비 1.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "fact_basis",
+      "sentence": "8월 근원 CPI는 전년 동월 대비 0.3% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "control",
+      "sentence": "8월 소매판매는 전월 대비 1.5% 늘었다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "fact_value",
+      "sentence": "8월 실업률은 4.5%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "rule",
+      "sentence": "한 조사에 따르면 현재 기업의 12%가 AI를 쓰고 있다(2023년 조사).",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R02"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R12"
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "rule",
+      "sentence": "평균 관세율이 내렸으므로 관세 수입 총액도 줄어든 셈이다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [
+        "R05"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R05"
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "control",
+      "sentence": "8월 비농업 취업자는 전월보다 18만 6천 명 늘었다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "rule",
+      "sentence": "따라서 지금 장기 국채를 사 두어야 한다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R11"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R11"
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "control",
+      "sentence": "8월 실업률은 4.1%였다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "fact_basis",
+      "sentence": "8월 소비자물가지수(CPI)는 전년 동월 대비 0.4% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "rule",
+      "sentence": "이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R11"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R11"
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "fact_value",
+      "sentence": "8월 산업생산지수는 전년 동월 대비 2.0% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "fact_basis",
+      "sentence": "8월 소비자물가지수(CPI)는 전년 동월 대비 0.4% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "fact_value",
+      "sentence": "8월 근원 CPI는 전년 동월 대비 1.8% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "rule",
+      "sentence": "금리가 내린 주에 소비가 늘었으므로 금리 인하가 소비를 살린 것이 분명하다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R10"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R10"
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "control",
+      "sentence": "8월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "rule",
+      "sentence": "시장에서는 내년 성장률을 1.4%로 보고 있다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R01"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R01"
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "control",
+      "sentence": "8월 PCE 물가지수는 전년 동월 대비 3.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "rule",
+      "sentence": "생산자물가의 trade services는 무역 서비스의 가격을 뜻한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R06"
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "fact_value",
+      "sentence": "미국 국채 10년물 금리는 8월 말 5.15%였다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "control",
+      "sentence": "8월 연방기금 실효금리는 월평균 3.63%였다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "rule",
+      "sentence": "두 회사가 양해각서를 맺었으므로 공급은 이미 시작됐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "R04"
+      ],
+      "caught": true,
+      "exact": true,
+      "expected_rule": "R04"
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "fact_value",
+      "sentence": "8월 근원 PCE 물가지수는 전년 동월 대비 3.6% 올랐다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": true,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "control",
+      "sentence": "미국 국채 2년물 금리는 8월 말 4.34%였다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": true,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-1",
+      "kind": "control_search",
+      "sentence": "미국 연방정부의 회계연도는 10월 1일에 시작한다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [
+        "R01"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "facts-1",
+      "kind": "control_search",
+      "sentence": "미국 실질 GDP 속보치는 분기가 끝난 뒤 약 한 달 뒤에 나온다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [
+        "R01"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "facts-1",
+      "kind": "fact_search",
+      "sentence": "미국 고용보고서의 실업률은 실업수당 청구 건수에서 계산한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-1",
+      "kind": "fact_search",
+      "sentence": "연방공개시장위원회(FOMC)는 한 해에 정례회의를 열두 번 연다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-2",
+      "kind": "control_search",
+      "sentence": "미국 개인소비지출(PCE) 물가지수는 상무부 경제분석국(BEA)이 발표한다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-2",
+      "kind": "fact_search",
+      "sentence": "근원 물가지수는 주거비와 의료비를 뺀 지수다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-2",
+      "kind": "control_search",
+      "sentence": "미국 소비자물가지수(CPI)는 노동통계국(BLS)이 매달 발표한다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-2",
+      "kind": "fact_search",
+      "sentence": "연준의 물가 목표는 PCE 물가 상승률 기준 연 3%다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-3",
+      "kind": "control_search",
+      "sentence": "연방공개시장위원회(FOMC)는 한 해에 정례회의를 여덟 번 연다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [
+        "R01"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "facts-3",
+      "kind": "fact_search",
+      "sentence": "미국 연방정부의 회계연도는 1월 1일에 시작한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-3",
+      "kind": "control_search",
+      "sentence": "미국 고용보고서의 실업률은 가계조사에서 나온다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-3",
+      "kind": "fact_search",
+      "sentence": "미국 실질 GDP 속보치는 분기가 끝난 뒤 약 여섯 달 뒤에 나온다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-4",
+      "kind": "control_search",
+      "sentence": "근원 물가지수는 식품과 에너지를 뺀 지수다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-4",
+      "kind": "fact_search",
+      "sentence": "미국 개인소비지출(PCE) 물가지수는 노동부 노동통계국(BLS)이 발표한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-4",
+      "kind": "control_search",
+      "sentence": "연준의 물가 목표는 PCE 물가 상승률 기준 연 2%다.",
+      "mismatch": false,
+      "confirmed": true,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-4",
+      "kind": "fact_search",
+      "sentence": "미국 소비자물가지수(CPI)는 연방준비제도가 매달 발표한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    }
+  ],
+  "baseline_rows": [
+    {
+      "case": "2026-06-activity",
+      "kind": "control",
+      "sentence": "6월 근원 CPI는 전년 동월 대비 2.6% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "rule",
+      "sentence": "이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R11"
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "control",
+      "sentence": "6월 소매판매는 전월 대비 0.2% 늘었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "fact_value",
+      "sentence": "6월 산업생산지수는 전년 동월 대비 2.1% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "rule",
+      "sentence": "따라서 지금 장기 국채를 사 두어야 한다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R11"
+    },
+    {
+      "case": "2026-06-activity",
+      "kind": "fact_value",
+      "sentence": "6월 실업률은 4.6%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "control",
+      "sentence": "6월 소비자물가지수(CPI)는 전년 동월 대비 3.5% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "rule",
+      "sentence": "미국 기업들은 일제히 가격을 올렸다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R03"
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "control",
+      "sentence": "6월 산업생산지수는 전년 동월 대비 1.5% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "fact_value",
+      "sentence": "6월 비농업 취업자는 전월보다 2만 9천 명 줄었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "fact_value",
+      "sentence": "6월 실업률은 4.6%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-06-jobs",
+      "kind": "rule",
+      "sentence": "같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R10"
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "rule",
+      "sentence": "연준은 다음 회의에서 금리를 내릴 것이다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R09"
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "control",
+      "sentence": "6월 PCE 물가지수는 전년 동월 대비 3.5% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "control",
+      "sentence": "6월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "rule",
+      "sentence": "모든 업종에서 예외 없이 고용이 늘었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R03"
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "fact_value",
+      "sentence": "6월 소비자물가지수(CPI)는 전년 동월 대비 2.9% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-06-prices",
+      "kind": "fact_basis",
+      "sentence": "6월 근원 CPI는 전년 동월 대비 0.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "fact_value",
+      "sentence": "미국 국채 2년물 금리는 6월 말 3.74%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "rule",
+      "sentence": "금리가 내린 주에 소비가 늘었으므로 금리 인하가 소비를 살린 것이 분명하다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R10"
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "control",
+      "sentence": "6월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "rule",
+      "sentence": "시장에서는 내년 성장률을 1.4%로 보고 있다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R01"
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "fact_value",
+      "sentence": "6월 연방기금 실효금리는 월평균 4.03%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-06-rates",
+      "kind": "control",
+      "sentence": "미국 국채 10년물 금리는 6월 말 4.44%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "control",
+      "sentence": "7월 소매판매는 전월 대비 0.4% 줄었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "rule",
+      "sentence": "미국 기업들은 일제히 가격을 올렸다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R03"
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "fact_basis",
+      "sentence": "7월 근원 CPI는 전년 동월 대비 0.2% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "control",
+      "sentence": "7월 실업률은 4.1%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "rule",
+      "sentence": "같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R10"
+    },
+    {
+      "case": "2026-07-activity",
+      "kind": "fact_value",
+      "sentence": "7월 산업생산지수는 전년 동월 대비 0.6% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "fact_value",
+      "sentence": "7월 산업생산지수는 전년 동월 대비 1.8% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "rule",
+      "sentence": "한 조사에 따르면 현재 기업의 12%가 AI를 쓰고 있다(2023년 조사).",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R12"
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "rule",
+      "sentence": "평균 관세율이 내렸으므로 관세 수입 총액도 줄어든 셈이다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R05"
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "control",
+      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 3.3% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "control",
+      "sentence": "7월 비농업 취업자는 전월보다 1만 명 줄었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "2026-07-jobs",
+      "kind": "fact_value",
+      "sentence": "7월 실업률은 4.5%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "control",
+      "sentence": "7월 근원 CPI는 전년 동월 대비 2.5% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "rule",
+      "sentence": "두 회사가 양해각서를 맺었으므로 공급은 이미 시작됐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R04"
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "fact_basis",
+      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 0.1% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "control",
+      "sentence": "7월 PCE 물가지수는 전년 동월 대비 3.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "fact_value",
+      "sentence": "7월 근원 PCE 물가지수는 전년 동월 대비 2.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-07-prices",
+      "kind": "rule",
+      "sentence": "생산자물가의 trade services는 무역 서비스의 가격을 뜻한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R06"
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "fact_value",
+      "sentence": "미국 국채 10년물 금리는 7월 말 4.35%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "control",
+      "sentence": "미국 국채 2년물 금리는 7월 말 4.28%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "fact_value",
+      "sentence": "7월 연방기금 실효금리는 월평균 3.23%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "rule",
+      "sentence": "모든 업종에서 예외 없이 고용이 늘었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R03"
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "control",
+      "sentence": "7월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-07-rates",
+      "kind": "rule",
+      "sentence": "연준은 다음 회의에서 금리를 내릴 것이다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R09"
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "control",
+      "sentence": "8월 산업생산지수는 전년 동월 대비 1.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "fact_basis",
+      "sentence": "8월 근원 CPI는 전년 동월 대비 0.3% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "control",
+      "sentence": "8월 소매판매는 전월 대비 1.5% 늘었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "fact_value",
+      "sentence": "8월 실업률은 4.5%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": false
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "rule",
+      "sentence": "한 조사에 따르면 현재 기업의 12%가 AI를 쓰고 있다(2023년 조사).",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R12"
+    },
+    {
+      "case": "2026-08-activity",
+      "kind": "rule",
+      "sentence": "평균 관세율이 내렸으므로 관세 수입 총액도 줄어든 셈이다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R05"
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "control",
+      "sentence": "8월 비농업 취업자는 전월보다 18만 6천 명 늘었다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "rule",
+      "sentence": "따라서 지금 장기 국채를 사 두어야 한다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R11"
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "control",
+      "sentence": "8월 실업률은 4.1%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "fact_basis",
+      "sentence": "8월 소비자물가지수(CPI)는 전년 동월 대비 0.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "rule",
+      "sentence": "이 구간에서는 주식 비중을 늘리면 반드시 수익이 난다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R11"
+    },
+    {
+      "case": "2026-08-jobs",
+      "kind": "fact_value",
+      "sentence": "8월 산업생산지수는 전년 동월 대비 2.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "fact_basis",
+      "sentence": "8월 소비자물가지수(CPI)는 전년 동월 대비 0.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "fact_value",
+      "sentence": "8월 근원 CPI는 전년 동월 대비 1.8% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "rule",
+      "sentence": "금리가 내린 주에 소비가 늘었으므로 금리 인하가 소비를 살린 것이 분명하다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R10"
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "control",
+      "sentence": "8월 근원 PCE 물가지수는 전년 동월 대비 3.0% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "rule",
+      "sentence": "시장에서는 내년 성장률을 1.4%로 보고 있다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R01"
+    },
+    {
+      "case": "2026-08-prices",
+      "kind": "control",
+      "sentence": "8월 PCE 물가지수는 전년 동월 대비 3.4% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "rule",
+      "sentence": "생산자물가의 trade services는 무역 서비스의 가격을 뜻한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R06"
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "fact_value",
+      "sentence": "미국 국채 10년물 금리는 8월 말 5.15%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "control",
+      "sentence": "8월 연방기금 실효금리는 월평균 3.63%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "rule",
+      "sentence": "두 회사가 양해각서를 맺었으므로 공급은 이미 시작됐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "caught": true,
+      "exact": false,
+      "expected_rule": "R04"
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "fact_value",
+      "sentence": "8월 근원 PCE 물가지수는 전년 동월 대비 3.6% 올랐다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": false
+    },
+    {
+      "case": "2026-08-rates",
+      "kind": "control",
+      "sentence": "미국 국채 2년물 금리는 8월 말 4.34%였다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-1",
+      "kind": "control_search",
+      "sentence": "미국 연방정부의 회계연도는 10월 1일에 시작한다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-1",
+      "kind": "control_search",
+      "sentence": "미국 실질 GDP 속보치는 분기가 끝난 뒤 약 한 달 뒤에 나온다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-1",
+      "kind": "fact_search",
+      "sentence": "미국 고용보고서의 실업률은 실업수당 청구 건수에서 계산한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-1",
+      "kind": "fact_search",
+      "sentence": "연방공개시장위원회(FOMC)는 한 해에 정례회의를 열두 번 연다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-2",
+      "kind": "control_search",
+      "sentence": "미국 개인소비지출(PCE) 물가지수는 상무부 경제분석국(BEA)이 발표한다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-2",
+      "kind": "fact_search",
+      "sentence": "근원 물가지수는 주거비와 의료비를 뺀 지수다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-2",
+      "kind": "control_search",
+      "sentence": "미국 소비자물가지수(CPI)는 노동통계국(BLS)이 매달 발표한다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-2",
+      "kind": "fact_search",
+      "sentence": "연준의 물가 목표는 PCE 물가 상승률 기준 연 3%다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-3",
+      "kind": "control_search",
+      "sentence": "연방공개시장위원회(FOMC)는 한 해에 정례회의를 여덟 번 연다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-3",
+      "kind": "fact_search",
+      "sentence": "미국 연방정부의 회계연도는 1월 1일에 시작한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-3",
+      "kind": "control_search",
+      "sentence": "미국 고용보고서의 실업률은 가계조사에서 나온다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-3",
+      "kind": "fact_search",
+      "sentence": "미국 실질 GDP 속보치는 분기가 끝난 뒤 약 여섯 달 뒤에 나온다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-4",
+      "kind": "control_search",
+      "sentence": "근원 물가지수는 식품과 에너지를 뺀 지수다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "false_alarm": false,
+      "marked": false
+    },
+    {
+      "case": "facts-4",
+      "kind": "fact_search",
+      "sentence": "미국 개인소비지출(PCE) 물가지수는 노동부 노동통계국(BLS)이 발표한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    },
+    {
+      "case": "facts-4",
+      "kind": "control_search",
+      "sentence": "연준의 물가 목표는 PCE 물가 상승률 기준 연 2%다.",
+      "mismatch": false,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [
+        "-"
+      ],
+      "false_alarm": false,
+      "marked": true
+    },
+    {
+      "case": "facts-4",
+      "kind": "fact_search",
+      "sentence": "미국 소비자물가지수(CPI)는 연방준비제도가 매달 발표한다.",
+      "mismatch": true,
+      "confirmed": false,
+      "primary": false,
+      "rules_hit": [],
+      "caught": true
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "2026-08-rates",
+  "as_of": "2026-11-20",
+  "text": "8월 미국 금리 점검\n\n2026년 8월 미국 금리와 물가를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n생산자물가의 trade services는 무역 서비스의 가격을 뜻한다. 미국 국채 10년물 금리는 8월 말 5.15%였다. 8월 연방기금 실효금리는 월평균 3.63%였다.\n\n두 회사가 양해각서를 맺었으므로 공급은 이미 시작됐다. 8월 근원 PCE 물가지수는 전년 동월 대비 3.6% 올랐다. 미국 국채 2년물 금리는 8월 말 4.34%였다.",
+  "labels": [
+    {
+      "kind": "rule",
+      "span": [
+        102,
+        141
+      ],
+      "sentence": "생산자물가의 trade services는 무역 서비스의 가격을 뜻한다.",
+      "rule_id": "R06"
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        142,
+        170
+      ],
+      "sentence": "미국 국채 10년물 금리는 8월 말 5.15%였다.",
+      "series": "DGS10",
+      "transform": "level",
+      "true": 4.75,
+      "written": 5.15
+    },
+    {
+      "kind": "control",
+      "span": [
+        171,
+        197
+      ],
+      "sentence": "8월 연방기금 실효금리는 월평균 3.63%였다.",
+      "series": "FEDFUNDS",
+      "transform": "level",
+      "true": 3.63
+    },
+    {
+      "kind": "rule",
+      "span": [
+        199,
+        229
+      ],
+      "sentence": "두 회사가 양해각서를 맺었으므로 공급은 이미 시작됐다.",
+      "rule_id": "R04"
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        230,
+        264
+      ],
+      "sentence": "8월 근원 PCE 물가지수는 전년 동월 대비 3.6% 올랐다.",
+      "series": "PCEPILFE",
+      "transform": "yoy",
+      "true": 3.0344,
+      "written": 3.63
+    },
+    {
+      "kind": "control",
+      "span": [
+        265,
+        292
+      ],
+      "sentence": "미국 국채 2년물 금리는 8월 말 4.34%였다.",
+      "series": "DGS2",
+      "transform": "level",
+      "true": 4.34
+    }
+  ]
+}

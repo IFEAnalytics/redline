@@ -1,0 +1,72 @@
+{
+  "id": "2026-07-prices",
+  "as_of": "2026-11-20",
+  "text": "7월 미국 물가 점검\n\n2026년 7월 미국 물가 지표를 정리한다. 아래 수치는 모두 미국 노동통계국(BLS)·경제분석국(BEA)·연준의 공식 발표치이며 FRED 수록분을 썼다.\n\n7월 근원 CPI는 전년 동월 대비 2.5% 올랐다. 두 회사가 양해각서를 맺었으므로 공급은 이미 시작됐다. 7월 소비자물가지수(CPI)는 전년 동월 대비 0.1% 올랐다.\n\n7월 PCE 물가지수는 전년 동월 대비 3.4% 올랐다. 7월 근원 PCE 물가지수는 전년 동월 대비 2.4% 올랐다. 생산자물가의 trade services는 무역 서비스의 가격을 뜻한다.",
+  "labels": [
+    {
+      "kind": "control",
+      "span": [
+        101,
+        130
+      ],
+      "sentence": "7월 근원 CPI는 전년 동월 대비 2.5% 올랐다.",
+      "series": "CPILFESL",
+      "transform": "yoy",
+      "true": 2.4665
+    },
+    {
+      "kind": "rule",
+      "span": [
+        131,
+        161
+      ],
+      "sentence": "두 회사가 양해각서를 맺었으므로 공급은 이미 시작됐다.",
+      "rule_id": "R04"
+    },
+    {
+      "kind": "fact_basis",
+      "span": [
+        162,
+        197
+      ],
+      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 0.1% 올랐다.",
+      "series": "CPIAUCSL",
+      "transform": "yoy",
+      "true": 3.3039,
+      "written": 0.07,
+      "note": "전월 대비 값을 전년 동월 대비로 적음"
+    },
+    {
+      "kind": "control",
+      "span": [
+        199,
+        230
+      ],
+      "sentence": "7월 PCE 물가지수는 전년 동월 대비 3.4% 올랐다.",
+      "series": "PCEPI",
+      "transform": "yoy",
+      "true": 3.3734
+    },
+    {
+      "kind": "fact_value",
+      "span": [
+        231,
+        265
+      ],
+      "sentence": "7월 근원 PCE 물가지수는 전년 동월 대비 2.4% 올랐다.",
+      "series": "PCEPILFE",
+      "transform": "yoy",
+      "true": 2.9953,
+      "written": 2.4
+    },
+    {
+      "kind": "rule",
+      "span": [
+        266,
+        305
+      ],
+      "sentence": "생산자물가의 trade services는 무역 서비스의 가격을 뜻한다.",
+      "rule_id": "R06"
+    }
+  ]
+}
