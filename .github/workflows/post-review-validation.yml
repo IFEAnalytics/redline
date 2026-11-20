@@ -1,0 +1,51 @@
+name: Final post-review validation
+on:
+  push:
+    branches: ['audit/liner-live-20261121']
+    paths: ['.github/workflows/post-review-validation.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: c57fb307de12a678029eb40d3cb97561cb1902cb
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q tests
+      - name: Compare the two systems on the same fixed 16 manuscripts
+        env:
+          LINER_API_KEY: ${{ secrets.LINER_API_KEY }}
+          REDLINE_EVAL_REVISION: c57fb307de12a678029eb40d3cb97561cb1902cb
+        run: |
+          python eval/run.py
+          mkdir -p proof
+          cp eval/results.json eval/RESULTS.md proof/
+      - name: Verify the filmed correction on the final code
+        env:
+          LINER_API_KEY: ${{ secrets.LINER_API_KEY }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          from redline.pipeline import review
+          text = Path("samples/us-cpi-july.md").read_text()
+          for label, article, expected in [("before",text,"mismatch"),("after",text.replace("2.9%","2.5%"),"confirmed")]:
+              r = review(article, as_of="2026-11-20")
+              Path(f"proof/{label}.json").write_text(json.dumps(r, ensure_ascii=False, indent=2))
+              assert any(c.get("series_id")=="CPIAUCNS" and c["status"]=="confirmed" for c in r["claims"])
+              assert any(c.get("series_id")=="CPILFENS" and c["status"]==expected for c in r["claims"])
+              print(label, [(c.get("series_id"),c["status"],c.get("fix")) for c in r["claims"]])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post-review-evidence
+          path: proof/
+          retention-days: 14
