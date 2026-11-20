@@ -176,6 +176,7 @@ async function init() {
   $("pack").innerHTML = META.packs.map((p) => `<option value="${p.id}">${esc(p.name)} (${p.rules})</option>`).join("");
   $("sample").innerHTML = `<option value="">예시 원고…</option>` + META.samples.map((s) => `<option value="${s.id}">${esc(s.title)}</option>`).join("");
   $("asof").value = new Date().toISOString().slice(0, 10);
+  if (META.packs.some((p) => p.id === "research")) $("pack").value = "research";
   renderRules();
 }
 function renderRules() {
@@ -234,10 +235,10 @@ function renderCards() {
     if (x.kind === "rule") return `<div class="card rule" data-id="${x.id}"><div class="chead"><span class="badge rule">규칙 위반</span><span class="chip">${x.rule_id} ${esc(x.rule_name)}</span><span class="cnum">${n}</span></div>
       <p class="quote">${esc(x.quote)}</p><p class="why">${esc(x.why)}</p>${x.fix ? `<p class="fix">${esc(x.fix)}</p>` : ""}
       ${x.origin ? `<p class="origin">이 규칙이 생긴 실수 — ${esc(x.origin)}</p>` : ""}</div>`;
-    const how = x.kind === "pending" ? "" : x.method === "primary-data" ? `<span class="chip data">통계 원자료</span>` : `<span class="chip liner">Liner 검색</span>`;
+    const how = x.kind === "pending" ? "" : x.method === "primary-data" ? `<span class="chip data">통계 원자료</span>` : x.method === "liner-search" ? `<span class="chip liner">Liner 검색</span>` : `<span class="chip">대조 불가</span>`;
     const src = (x.sources || []).filter((s) => s.url).slice(0, 2).map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.host)} — ${esc(s.title)}</a>`).join("");
     return `<div class="card ${x.kind}" data-id="${x.id}"><div class="chead"><span class="badge ${x.kind}">${LABEL[x.kind]}</span>${how}<span class="cnum">${n}</span></div>
-      <p class="quote">${esc(x.quote)}</p>${x.reason ? `<p class="why">${esc(x.reason)}</p>` : ""}${x.fix ? `<p class="fix">${esc(x.fix)}</p>` : ""}${src ? `<div class="src">${src}</div>` : ""}</div>`;
+      <p class="quote">${esc(x.quote)}</p>${x.reason ? `<p class="why">${esc(x.reason)}</p>` : ""}${x.fix ? `<p class="fix">${esc(x.fix)}</p>` : ""}${x.observed ? `<p class="why">계산 근거 · ${esc(x.observed.detail)}</p>` : ""}${x.sources?.[0]?.evidence ? `<p class="why">출처 원문 · ${esc(x.sources[0].evidence)}</p>` : ""}${src ? `<div class="src">${src}</div>` : ""}</div>`;
   }).join("");
 }
 function tiles() {

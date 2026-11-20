@@ -52,8 +52,8 @@
       "sentence": "6월 소비자물가지수(CPI)는 전년 동월 대비 2.9% 올랐다.",
       "series": "CPIAUCSL",
       "transform": "yoy",
-      "true": 3.4635,
-      "written": 2.86
+      "true": 3.5,
+      "written": 2.9
     },
     {
       "kind": "fact_basis",
@@ -64,7 +64,7 @@
       "sentence": "6월 근원 CPI는 전년 동월 대비 0.0% 올랐다.",
       "series": "CPILFESL",
       "transform": "yoy",
-      "true": 2.5658,
+      "true": 2.6,
       "written": -0.02,
       "note": "전월 대비 값을 전년 동월 대비로 적음"
     }

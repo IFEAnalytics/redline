@@ -2,12 +2,12 @@
   "summary": {
     "cases": 16,
     "failed": [],
-    "seconds": 237,
+    "seconds": 208,
     "usage": {
-      "model_calls": 79,
-      "search_calls": 47,
-      "prompt_tokens": 76206,
-      "completion_tokens": 18623
+      "model_calls": 76,
+      "search_calls": 44,
+      "prompt_tokens": 80214,
+      "completion_tokens": 19113
     },
     "model": [
       "liner-mark-1.3"
@@ -25,7 +25,7 @@
       24
     ],
     "rule_exact": [
-      19,
+      20,
       24
     ],
     "control_false_alarm": [
@@ -45,7 +45,7 @@
       8
     ],
     "search_confirmed": [
-      7,
+      8,
       8
     ],
     "control_marked": [
@@ -78,7 +78,7 @@
         8
       ],
       "control_marked": [
-        7,
+        6,
         24
       ]
     }
@@ -169,14 +169,12 @@
       "case": "2026-06-jobs",
       "kind": "rule",
       "sentence": "미국 기업들은 일제히 가격을 올렸다.",
-      "mismatch": false,
+      "mismatch": true,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "R03"
-      ],
+      "rules_hit": [],
       "caught": true,
-      "exact": true,
+      "exact": false,
       "expected_rule": "R03"
     },
     {
@@ -414,8 +412,8 @@
       "case": "2026-07-activity",
       "kind": "rule",
       "sentence": "같은 달 주가가 올랐으니, 이는 물가 둔화가 주가를 끌어올렸다는 증거다.",
-      "mismatch": false,
-      "confirmed": true,
+      "mismatch": true,
+      "confirmed": false,
       "primary": false,
       "rules_hit": [
         "R10"
@@ -475,7 +473,7 @@
     {
       "case": "2026-07-jobs",
       "kind": "control",
-      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 3.3% 올랐다.",
+      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 3.4% 올랐다.",
       "mismatch": false,
       "confirmed": true,
       "primary": true,
@@ -607,12 +605,14 @@
       "case": "2026-07-rates",
       "kind": "rule",
       "sentence": "모든 업종에서 예외 없이 고용이 늘었다.",
-      "mismatch": true,
+      "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "R03"
+      ],
       "caught": true,
-      "exact": false,
+      "exact": true,
       "expected_rule": "R03"
     },
     {
@@ -690,10 +690,10 @@
       "confirmed": false,
       "primary": false,
       "rules_hit": [
-        "R02"
+        "R12"
       ],
       "caught": true,
-      "exact": false,
+      "exact": true,
       "expected_rule": "R12"
     },
     {
@@ -701,7 +701,7 @@
       "kind": "rule",
       "sentence": "평균 관세율이 내렸으므로 관세 수입 총액도 줄어든 셈이다.",
       "mismatch": false,
-      "confirmed": true,
+      "confirmed": false,
       "primary": false,
       "rules_hit": [
         "R05"
@@ -969,7 +969,7 @@
       "kind": "control_search",
       "sentence": "미국 개인소비지출(PCE) 물가지수는 상무부 경제분석국(BEA)이 발표한다.",
       "mismatch": false,
-      "confirmed": false,
+      "confirmed": true,
       "primary": false,
       "rules_hit": [],
       "false_alarm": false,
@@ -1101,11 +1101,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "false_alarm": false,
-      "marked": true
+      "marked": false
     },
     {
       "case": "2026-06-activity",
@@ -1209,9 +1207,7 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "caught": false
     },
     {
@@ -1221,9 +1217,7 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "caught": false
     },
     {
@@ -1319,7 +1313,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "caught": false
     },
     {
@@ -1343,9 +1339,11 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "false_alarm": false,
-      "marked": false
+      "marked": true
     },
     {
       "case": "2026-06-rates",
@@ -1389,11 +1387,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "false_alarm": false,
-      "marked": true
+      "marked": false
     },
     {
       "case": "2026-07-activity",
@@ -1453,9 +1449,7 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "caught": false
     },
     {
@@ -1501,7 +1495,7 @@
     {
       "case": "2026-07-jobs",
       "kind": "control",
-      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 3.3% 올랐다.",
+      "sentence": "7월 소비자물가지수(CPI)는 전년 동월 대비 3.4% 올랐다.",
       "mismatch": false,
       "confirmed": false,
       "primary": false,
@@ -1701,6 +1695,7 @@
       "confirmed": false,
       "primary": false,
       "rules_hit": [
+        "-",
         "-"
       ],
       "caught": false
@@ -1725,9 +1720,7 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [
-        "-"
-      ],
+      "rules_hit": [],
       "caught": false
     },
     {
@@ -1801,7 +1794,9 @@
       "mismatch": false,
       "confirmed": false,
       "primary": false,
-      "rules_hit": [],
+      "rules_hit": [
+        "-"
+      ],
       "caught": false
     },
     {

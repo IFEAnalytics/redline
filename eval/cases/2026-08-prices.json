@@ -12,7 +12,7 @@
       "sentence": "8월 소비자물가지수(CPI)는 전년 동월 대비 0.4% 올랐다.",
       "series": "CPIAUCSL",
       "transform": "yoy",
-      "true": 3.353,
+      "true": 3.4,
       "written": 0.4,
       "note": "전월 대비 값을 전년 동월 대비로 적음"
     },
@@ -25,8 +25,8 @@
       "sentence": "8월 근원 CPI는 전년 동월 대비 1.8% 올랐다.",
       "series": "CPILFESL",
       "transform": "yoy",
-      "true": 2.4462,
-      "written": 1.85
+      "true": 2.4,
+      "written": 1.8
     },
     {
       "kind": "rule",

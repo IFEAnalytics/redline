@@ -3,8 +3,8 @@
 # transforms: level(수준) · yoy(전년 동월/동기 대비 %) · mom(전월/전기 대비 %) · chg(전월/전기 대비 증감, 단위 그대로) · saar(전기 대비 연율 %)
 source: "FRED, Federal Reserve Bank of St. Louis (https://fred.stlouisfed.org) · OECD Data Explorer (https://data-explorer.oecd.org)"
 series:
-  - {id: CPIAUCSL, name: "미국 소비자물가지수(CPI, 헤드라인)", en: "US CPI all items", freq: M, transforms: [yoy, mom], agency: BLS}
-  - {id: CPILFESL, name: "미국 근원 CPI(식품·에너지 제외)", en: "US core CPI", freq: M, transforms: [yoy, mom], agency: BLS}
+  - {id: CPIAUCSL, unadjusted_id: CPIAUCNS, name: "미국 소비자물가지수(CPI, 헤드라인)", en: "US CPI all items", freq: M, transforms: [yoy, mom], agency: BLS}
+  - {id: CPILFESL, unadjusted_id: CPILFENS, name: "미국 근원 CPI(식품·에너지 제외)", en: "US core CPI", freq: M, transforms: [yoy, mom], agency: BLS}
   - {id: PCEPI, name: "미국 PCE 물가지수(헤드라인)", en: "US PCE price index", freq: M, transforms: [yoy, mom], agency: BEA}
   - {id: PCEPILFE, name: "미국 근원 PCE 물가지수", en: "US core PCE price index", freq: M, transforms: [yoy, mom], agency: BEA}
   - {id: PPIFIS, name: "미국 생산자물가지수(PPI, 최종수요)", en: "US PPI final demand", freq: M, transforms: [yoy, mom], agency: BLS}

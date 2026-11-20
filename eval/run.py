@@ -97,14 +97,14 @@ def main() -> int:
             base = baseline(case, Liner())
         except Exception as e:  # noqa: BLE001
             print(f"  ! {case['id']} 비교 기준 실패: {e}", file=sys.stderr)
-            base = {"claims": [], "findings": []}
+            return case, res, None
         print(f"  · {case['id']} 주장 {len(res['claims'])} 규칙 {len(res['findings'])}", file=sys.stderr)
         return case, res, base
 
     rows, brows, raw, failed = [], [], {}, []
     with ThreadPoolExecutor(max_workers=a.workers) as pool:
         for case, res, base in pool.map(run, cases):
-            if res is None:
+            if res is None or base is None:
                 failed.append(case["id"])
                 continue
             raw[case["id"]] = res
@@ -112,6 +112,10 @@ def main() -> int:
             brows += score_case(case, base)
             for k in usage:
                 usage[k] += res["usage"][k]
+
+    if failed:
+        print("양쪽 검토를 완료하지 못한 원고: " + ", ".join(failed), file=sys.stderr)
+        return 1
 
     def rate(kind, key, src=None):
         sel = [r for r in (rows if src is None else src) if r["kind"] == kind]
@@ -130,6 +134,8 @@ def main() -> int:
                             "fact_search": rate("fact_search", "caught", brows),
                             "search_false_alarm": rate("control_search", "false_alarm", brows),
                             "control_marked": rate("control", "marked", brows)}}
+    if revision := os.environ.get("REDLINE_EVAL_REVISION"):
+        summary["revision"] = revision
     (HERE / "results.json").write_text(json.dumps({"summary": summary, "rows": rows, "baseline_rows": brows}, ensure_ascii=False, indent=2), encoding="utf-8")
     (HERE / "RESULTS.md").write_text(render(summary, rows), encoding="utf-8")
     print(render(summary, rows).split("## 놓친")[0])
@@ -149,7 +155,7 @@ def render(s: dict, rows: list[dict]) -> str:
            f"원고 {s['cases']}편, 실행 {s['seconds']}초, 모델 {', '.join(s['model'])}. "
            f"Liner 모델 {s['usage']['model_calls']}회 · 검색 {s['usage']['search_calls']}회.", "",
            "| 심은 것 | Redline | 범용 AI에 원고만 주고 물은 경우 |", "|---|---|---|",
-           f"| 사실 오류 전체 | {pct(fact)} | {pct(bfact)} |",
+           f"| 수치 오류 전체 | {pct(fact)} | {pct(bfact)} |",
            f"| └ 수치 오기 | {pct(s['fact_value'])} | {pct(b['fact_value'])} |",
            f"| └ 기준 혼동(전월 대비 값을 전년 대비로) | {pct(s['fact_basis'])} | {pct(b['fact_basis'])} |",
            f"| 규칙 위반 문장 | {pct(s['rule'])} | {pct(b['rule'])} |",
@@ -162,12 +168,14 @@ def render(s: dict, rows: list[dict]) -> str:
            f"| 참인 문장을 통계 원자료로 '확인' | {pct(s['control_confirmed'])} | — |", "",
            "범용 AI는 같은 Liner 모델에 원고만 주고 '틀린 곳과 고칠 곳을 짚으라'고 물은 결과다(통계 대조·검색·규칙 묶음 없음).", "",
            "## 읽는 법과 한계", "",
-           "- 원고는 `eval/build.py`가 FRED 실제 값으로 참인 문장을 만들고 오류를 심어 자동 생성한다. 정답표는 `eval/cases/*.json`.",
+           "- 미국 CPI 전년비 정답은 BLS 발표문에서 별도로 기록했다. 나머지 통계 문장은 FRED에서 계산한 값으로 생성했다. 정답표는 `eval/cases/*.json`.",
            "- 심은 수치 오류는 Redline의 통계 목록(미국 지표 16종) 안의 지표다. 목록 밖 사실은 Liner 검색 판정에 의존하며, 제도·정의 8쌍으로만 쟀다.",
            "- 심은 규칙 위반 문장은 눈에 띄게 쓴 것이라 범용 AI도 잘 잡는다. Redline이 보태는 것은 어느 규칙을 왜 어겼는지와 고칠 문장이다.",
            "- 오류를 심은 사람과 도구를 만든 사람이 같다. 남이 쓴 실제 원고에서의 성능은 이 표보다 낮을 수 있다.",
            "- 모델 응답이 실행마다 조금씩 달라 숫자는 재실행하면 몇 건씩 움직인다.", "",
            "## 놓친 것과 잘못 짚은 것", ""]
+    if s.get("revision"):
+        out[2:2] = [f"검증한 제품 커밋 `{s['revision']}`", ""]
     miss = [r for r in rows if not r["kind"].startswith("control") and not r["caught"]]
     fa = [r for r in rows if r["kind"].startswith("control") and r.get("false_alarm")]
     for r in miss:
