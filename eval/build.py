@@ -107,6 +107,21 @@ def perturb(transform: str, v: float, rng: random.Random) -> float:
     return v + rng.choice([-1, 1]) * step
 
 
+# Published 12-month rates, taken independently from BLS CPI releases.
+# https://www.bls.gov/news.release/archives/cpi_08122026.htm (June and July)
+# https://www.bls.gov/news.release/archives/cpi_09112026.htm (August)
+BLS_CPI_YOY = {
+    "CPIAUCSL": {"2026-06": 3.5, "2026-07": 3.4, "2026-08": 3.4},
+    "CPILFESL": {"2026-06": 2.6, "2026-07": 2.5, "2026-08": 2.4},
+}
+
+
+def reference_value(sid, transform, month):
+    if transform == "yoy" and sid in BLS_CPI_YOY:
+        return BLS_CPI_YOY[sid][month]
+    return stats.observe(sid, transform, month).value
+
+
 def build() -> list[dict]:
     rng = random.Random(20261120)
     seeds = RULE_SEEDS[:]
@@ -120,23 +135,23 @@ def build() -> list[dict]:
             parts = []  # (kind, sentence, meta)
             # 참인 문장 2개 (대조군)
             for sid, tr, fn in facts[:2]:
-                o = stats.observe(sid, tr, month)
-                parts.append(("control", fn(month, o.value), {"series": sid, "transform": tr, "true": o.value}))
+                value = reference_value(sid, tr, month)
+                parts.append(("control", fn(month, value), {"series": sid, "transform": tr, "true": value}))
             # 수치 오기 1개
             sid, tr, fn = facts[2]
-            o = stats.observe(sid, tr, month)
-            wrong = perturb(tr, o.value, rng)
-            parts.append(("fact_value", fn(month, wrong), {"series": sid, "transform": tr, "true": o.value, "written": round(wrong, 2)}))
+            value = reference_value(sid, tr, month)
+            wrong = perturb(tr, value, rng)
+            parts.append(("fact_value", fn(month, wrong), {"series": sid, "transform": tr, "true": value, "written": round(wrong, 2)}))
             # 기준 혼동 1개: 전월 대비 값을 '전년 동월 대비'라고 쓰거나(지수), 한 달 전 값을 이번 달 값으로 쓴다(수준)
             sid, tr, fn = facts[3]
-            o = stats.observe(sid, tr, month)
+            value = reference_value(sid, tr, month)
             if tr == "yoy":
                 m = stats.observe(sid, "mom", month)
-                parts.append(("fact_basis", fn(month, m.value), {"series": sid, "transform": tr, "true": o.value, "written": round(m.value, 2),
+                parts.append(("fact_basis", fn(month, m.value), {"series": sid, "transform": tr, "true": value, "written": round(m.value, 2),
                                                                  "note": "전월 대비 값을 전년 동월 대비로 적음"}))
             else:
-                wrong = perturb(tr, o.value, rng)
-                parts.append(("fact_value", fn(month, wrong), {"series": sid, "transform": tr, "true": o.value, "written": round(wrong, 2)}))
+                wrong = perturb(tr, value, rng)
+                parts.append(("fact_value", fn(month, wrong), {"series": sid, "transform": tr, "true": value, "written": round(wrong, 2)}))
             # 규칙 위반 2개
             for rid, sent in (seeds[(2 * k - 2) % len(seeds)], seeds[(2 * k - 1) % len(seeds)]):
                 parts.append(("rule", sent, {"rule_id": rid}))

@@ -28,13 +28,13 @@ def to_markdown(res: dict) -> str:
         out.append("고칠 곳을 찾지 못했다.")
     out += ["", "## 주장 원장", "", "| # | 판정 | 방법 | 원고 구절 | 근거 |", "|---|---|---|---|---|"]
     for c in res["claims"]:
-        how = "통계 원자료" if c.get("method") == "primary-data" else "Liner 검색"
+        how = "통계 원자료" if c.get("method") == "primary-data" else ("Liner 검색" if c.get("method") == "liner-search" else "대조 불가")
         src = (c.get("sources") or [{}])[0]
         link = f"[{src.get('host', '')}]({src.get('url', '')})" if src.get("url") else "—"
         q = c["quote"].replace("|", "/").replace("\n", " ")
         out.append(f"| {c['id']} | {LABEL[c['status']]} | {how} | {q} | {link} |")
     u = res["usage"]
     out += ["", f"Liner 호출: 모델 {u['model_calls']}회({', '.join(u['models'])}) · 검색 {u['search_calls']}회. "
-            "수치 대조 자료: FRED(Federal Reserve Bank of St. Louis).",
+            "수치 대조 자료: FRED · OECD.",
             "", "> 이 보고서는 초안 검토를 돕는 도구의 출력이다. '확인'은 근거 자료와 일치한다는 뜻이며 최종 판단은 작성자가 한다. 투자 자문이 아니다."]
     return "\n".join(out) + "\n"

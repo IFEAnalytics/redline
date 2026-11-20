@@ -43,7 +43,7 @@ def main(argv: list[str] | None = None) -> int:
                  on_event=lambda e: print(f"… {e['msg']}", file=sys.stderr) if e.get("msg") else None)
     print(f"\n■ 주장 대조 ({len(res['claims'])}건)")
     for c in res["claims"]:
-        how = "1차 통계" if c.get("method") == "primary-data" else "Liner 검색"
+        how = "1차 통계" if c.get("method") == "primary-data" else ("Liner 검색" if c.get("method") == "liner-search" else "대조 불가")
         print(f"  {MARK[c['status']]:8} [{how}] {c['quote'][:60]}")
         print(f"           {c['reason']}")
         if c.get("fix"):

@@ -4,6 +4,8 @@ FRED 공개 CSV 주소는 키가 필요 없다. 그래서 심사·재현 환경�
 """
 from __future__ import annotations
 
+import calendar
+import datetime as dt
 import csv
 import io
 import re
@@ -113,7 +115,7 @@ def _index_on_or_before(rows, date: str) -> int | None:
     return idx
 
 
-def observe(series_id: str, transform: str, period: str) -> Observed:
+def observe(series_id: str, transform: str, period: str, *, adjustment=None, as_of=None) -> Observed:
     """시리즈·변환·기간으로 통계 원자료의 값을 계산한다. 못 구하면 ValueError."""
     cat = catalog()["series"]
     if series_id not in cat:
@@ -125,14 +127,32 @@ def observe(series_id: str, transform: str, period: str) -> Observed:
     if not pp:
         raise ValueError(f"기간을 읽을 수 없습니다: {period}")
     grain, date = pp
+    # CPI headlines conventionally use an unadjusted year-on-year series. An
+    # explicit seasonal-adjustment basis in the manuscript takes precedence.
+    if "unadjusted_id" in meta:
+        if adjustment not in (None, "sa", "nsa"):
+            raise ValueError("계절조정 기준을 확인할 수 없습니다")
+        if adjustment == "nsa" or (adjustment is None and transform == "yoy"):
+            series_id = meta["unadjusted_id"]
     rows = fetch(series_id)
     freq = meta["freq"]
     if freq == "D":
-        i = _index_on_or_before(rows, date if grain == "D" else date[:8] + "31")
-        if grain != "D":  # 월을 준 일별 시리즈: 그 달의 마지막 관측
-            i = _index_on_or_before(rows, _month_end(date))
+        target = dt.date.fromisoformat(date)
+        if grain == "M":
+            target = target.replace(day=calendar.monthrange(target.year, target.month)[1])
+        elif grain != "D":
+            raise ValueError("일별 통계에는 날짜 또는 월말을 지정해 주세요")
+        cutoff = dt.date.fromisoformat(as_of) if as_of else dt.date.today()
+        if target > cutoff:
+            raise ValueError("원고 기준일에 해당 기간이 끝나지 않았습니다")
+        i = _index_on_or_before(rows, target.isoformat())
         if i is None:
             raise ValueError("해당 기간 관측 없음")
+        observed_date = dt.date.fromisoformat(rows[i][0])
+        if grain == "D" and observed_date != target:
+            raise ValueError("지정한 날짜의 관측이 없습니다")
+        if grain == "M" and (observed_date.month != target.month or (target - observed_date).days > 4):
+            raise ValueError("해당 월말의 최근 관측이 없습니다")
     else:
         if grain == "D":
             date = date[:8] + "01"
@@ -182,8 +202,10 @@ def observe(series_id: str, transform: str, period: str) -> Observed:
     return Observed(series_id, transform, period, d, round(val, 4), unit, detail, url)
 
 
-def _month_end(date: str) -> str:
-    return date[:8] + "31"
+def display_value(observed: Observed) -> str:
+    if observed.transform in ("yoy", "mom", "saar"):
+        return f"{observed.value:.1f}"
+    return f"{observed.value:.4f}".rstrip("0").rstrip(".")
 
 
 def compare(claimed: float, observed: float, transform: str, loose: bool = False) -> tuple[str, float]:
@@ -192,9 +214,7 @@ def compare(claimed: float, observed: float, transform: str, loose: bool = False
     loose: 기준연도를 바꿔 다시 낸 지수(OECD 수록분)로 계산한 증가율은 공식 발표치와 0.1%p 까지 어긋날 수 있어 폭을 넓힌다.
     """
     diff = claimed - observed
-    tol = (0.11 if loose else 0.06) if transform in ("yoy", "mom", "saar") else max(0.011, abs(observed) * 0.002)
+    tol = (0.11 if loose else 0.06) if transform in ("yoy", "mom", "saar") else 0.005001
     if loose and transform == "level":
         tol = max(tol, 0.06)
-    if transform == "chg" and abs(observed) > 20:  # 취업자 증감(천 명) 같은 큰 단위
-        tol = max(1.5, abs(observed) * 0.02)
     return ("match" if abs(diff) <= tol else "mismatch"), round(diff, 4)

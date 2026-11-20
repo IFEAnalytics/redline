@@ -8,7 +8,7 @@ from redline import stats
 def fake_fred(monkeypatch):
     data = {
         # 2025-10 이 빠진 월별 지수(실제 CPI 처럼 결측 월이 있는 경우)
-        "CPIAUCSL": [("2025-08-01", 100.0), ("2025-09-01", 101.0), ("2025-11-01", 102.0)]
+        "CPIAUCNS": [("2025-08-01", 100.0), ("2025-09-01", 101.0), ("2025-11-01", 102.0)]
         + [(f"2026-{m:02d}-01", 103.0 + m * 0.1) for m in range(1, 10)],
         "UNRATE": [("2026-08-01", 4.1), ("2026-09-01", 4.2)],
         "GDPC1": [("2026-01-01", 100.0), ("2026-04-01", 101.0)],
@@ -54,3 +54,27 @@ def test_period_parsing():
     assert stats.parse_period("2026-Q3") == ("Q", "2026-07-01")
     assert stats.parse_period("2026-9") == ("M", "2026-09-01")
     assert stats.parse_period("작년") is None
+
+
+def test_july_cpi_uses_published_basis(monkeypatch):
+    # BLS July 2026 release, Table 1, and the corresponding adjusted series.
+    series = {"CPIAUCNS": (("2025-07-01", 323.048), ("2026-07-01", 333.918)),
+              "CPIAUCSL": (("2025-07-01", 322.169), ("2026-06-01", 332.568), ("2026-07-01", 332.813))}
+    monkeypatch.setattr(stats, "fetch", series.__getitem__)
+    annual = stats.observe("CPIAUCSL", "yoy", "2026-07")
+    assert annual.series_id == "CPIAUCNS" and annual.url.endswith("/CPIAUCNS")
+    assert stats.display_value(annual) == "3.4"
+    assert stats.display_value(stats.observe("CPIAUCSL", "mom", "2026-07")) == "0.1"
+    assert stats.display_value(stats.observe("CPIAUCSL", "yoy", "2026-07", adjustment="sa")) == "3.3"
+
+
+def test_daily_series_requires_evidence_for_requested_period():
+    for period in ("2026-12", "2026-10-31", "2026-11"):
+        with pytest.raises(ValueError):
+            stats.observe("DGS10", "level", period, as_of="2027-01-01")
+    with pytest.raises(ValueError):
+        stats.observe("DGS10", "level", "2026-10", as_of="2026-10-29")
+    point = stats.observe("DGS10", "level", "2026-10", as_of="2026-11-01")
+    assert stats.display_value(point) == "4.94"
+    assert stats.compare(float(stats.display_value(point)), point.value, "level")[0] == "match"
+    assert stats.compare(159700, 160000, "level")[0] == "mismatch"
