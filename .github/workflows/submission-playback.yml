@@ -1,0 +1,86 @@
+name: Capture Redline browser interactions
+on:
+  push:
+    branches: ['audit/liner-live-20261121']
+    paths: ['.github/workflows/submission-playback.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 2641723874a164ef91d8bb0df4b79c0c2fe68aae
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: submission-ui
+          run-id: 44829912348
+          github-token: ${{ github.token }}
+          path: recorded
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          pip install -r requirements.txt playwright
+          sudo apt-get install -y fonts-noto-cjk
+          python -m playwright install --with-deps chromium
+          uvicorn redline.server:app --port 8765 &
+          for i in $(seq 1 20); do curl -sSf localhost:8765/api/meta >/dev/null && break || sleep 1; done
+      - name: Film navigation using the captured API responses
+        shell: python
+        run: |
+          import json, time
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          data = {n:json.loads(Path("recorded/ui",n+".json").read_text()) for n in ("research","corrected","proposal")}
+          folder=Path("movies");folder.mkdir()
+          with sync_playwright() as p:
+              b=p.chromium.launch()
+              page=b.new_page(viewport={"width":1410,"height":800},record_video_dir=folder,record_video_size={"width":1410,"height":800})
+              def replay(route):
+                  text=route.request.post_data_json["text"].strip()
+                  d=next(x for x in data.values() if x["text"]==text)
+                  stages=[{"stage":"extract_done","claims":d["claims"]}]+[{"stage":"claim","claim":c} for c in d["claims"]]+[{"stage":"rules"},{"stage":"done","result":d}]
+                  route.fulfill(content_type="application/x-ndjson",body="".join(json.dumps(e,ensure_ascii=False)+"\n" for e in stages))
+              page.route("**/api/review",replay)
+              t0=time.monotonic()
+              page.goto("http://localhost:8765",wait_until="domcontentloaded")
+              page.locator('#sample option[value="us-cpi-july"]').wait_for(state="attached")
+              page.evaluate("document.fonts.ready")
+              # Capture a visible pointer for the screen recording.
+              page.evaluate("""() => {const el=document.createElement('div');el.style.cssText='position:fixed;left:0;top:0;width:16px;height:16px;border:3px solid #bd2444;border-radius:50%;z-index:999;pointer-events:none;background:#ffffff80';document.body.append(el);document.addEventListener('mousemove',e=>{el.style.transform='translate('+(e.clientX-8)+'px,'+(e.clientY-8)+'px)'});}""")
+              times={}
+              def start(n): times[n]=[time.monotonic()-t0]
+              def stop(n): times[n].append(time.monotonic()-t0)
+              def click(loc):
+                  loc.scroll_into_view_if_needed();bb=loc.bounding_box()
+                  page.mouse.move(bb['x']+bb['width']/2,bb['y']+bb['height']/2,steps=15)
+                  page.wait_for_timeout(350);loc.click();page.wait_for_timeout(850)
+              def review():
+                  click(page.locator("#go"));page.wait_for_function("RESULT !== null")
+              def focus(name, sel):
+                  start(name);click(page.locator(sel).first);page.wait_for_timeout(1500);stop(name)
+              start("intro");page.locator("#sample").select_option("us-cpi-july");page.wait_for_timeout(1400);review();stop("intro")
+              core=next(c["id"] for c in data["research"]["claims"] if c.get("series_id")=="CPILFENS")
+              head=next(c["id"] for c in data["research"]["claims"] if c.get("series_id")=="CPIAUCNS")
+              search=next(c["id"] for c in data["research"]["claims"] if c["method"]=="liner-search")
+              for name,idx in [("core",core),("headline",head),("search",search)]:focus(name,'mark[data-ids~="'+idx+'"]')
+              start("edit");click(page.locator("#edit"));page.locator("#src").fill(data["corrected"]["text"]);page.wait_for_timeout(650);review();stop("edit")
+              start("switch");click(page.locator("#edit"));page.locator("#sample").select_option("proposal-mock");page.wait_for_timeout(800);review();stop("switch")
+              schedule=next(f["id"] for f in data["proposal"]["findings"] if "14주" in f["why"])
+              focus("schedule",'mark[data-ids~="'+schedule+'"]')
+              movie=page.video
+              page.close()
+              movie.save_as(folder/"navigation.webm")
+              raw=Path(movie.path());raw.unlink()
+              b.close()
+              (folder/"cuts.json").write_text(json.dumps(times))
+      - uses: actions/upload-artifact@v4
+        with:
+          name: submission-motion
+          path: movies/
+          retention-days: 14
