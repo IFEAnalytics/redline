@@ -1,50 +1,134 @@
 # Redline — 보고서가 나가기 전, 선임의 마지막 검토
 
-원고를 넣으면 ① 확인할 주장을 뽑아 원장을 만들고 ② 수치는 통계 원자료(FRED)로 다시 계산해 대조하고,
-그 밖의 사실은 Liner 검색으로 출처를 찾아 대조한 뒤 ③ 실제 실수에서 나온 검토 규칙으로 빨간 줄을 긋는다.
+> 라이너 .EXE-THON 2026 출품작 · IFE Analytics (이정우)
 
-> 라이너 .EXE-THON 2026 출품작 (개발 중). 실행 방법·Liner API 사용 지점·기존/신규 구분은 제출 전에 이 문서에 정리한다.
+컨설팅 회사와 증권사에서는 보고서가 나가기 전에 선임이 초안에 빨간 줄을 긋는다. 숫자를 다시 맞춰 보고, 근거 없는 단정을 지우고, 틀린 용어를 고친다.
+1인 리서치 회사에는 그 선임이 없다. **Redline은 그 마지막 검토를 대신하는 에이전트다.**
 
-## 빠른 실행
+원고를 넣으면 세 가지를 한다.
 
-```bash
-python -m venv .venv && .venv/bin/pip install -r requirements.txt
-cp .env.example .env        # LINER_API_KEY 만 채운다 (다른 유료 키 불필요)
-.venv/bin/uvicorn redline.server:app --port 8765     # 웹 화면: http://localhost:8765
-.venv/bin/python -m redline review samples/us-inflation-oct.md   # 명령줄
-.venv/bin/python -m pytest -q tests
-```
+1. **주장 원장** — 원고에서 사실로 확인해야 할 문장을 뽑는다.
+2. **근거 대조** — 수치는 통계 원자료에서 값을 받아 **다시 계산해** 대조하고, 그 밖의 사실은 Liner 검색으로 출처를 찾아 대조한다.
+3. **규칙 검토** — 실제 실수에서 나온 검토 규칙으로 인과 단정, 일부를 전부로 쓴 문장, 투자 권유로 읽히는 문장 등을 짚고 고칠 문장을 제안한다.
 
 ![검토 화면](docs/screen-research.png)
 
-규칙 묶음을 바꾸면 같은 엔진이 다른 문서를 검토한다(`rulepacks/research.yaml` 12개, `rulepacks/proposal.yaml` 6개).
-`samples/`의 원고는 시연용으로 일부러 오류를 넣은 가상 원고다.
+## 실행 방법
+
+Python 3.10 이상. 필요한 키는 **Liner API 키 하나**다. 통계 자료(FRED·OECD)는 키 없이 받는다.
+
+```bash
+git clone https://github.com/IFEAnalytics/redline && cd redline
+python -m venv .venv && .venv/bin/pip install -r requirements.txt
+cp .env.example .env            # LINER_API_KEY=... 한 줄만 채운다
+
+.venv/bin/uvicorn redline.server:app --port 8765     # 웹 화면 → http://localhost:8765
+.venv/bin/python -m redline review samples/us-inflation-oct.md              # 명령줄
+.venv/bin/python -m redline review samples/proposal-mock.md --pack proposal # 규칙 묶음 바꾸기
+.venv/bin/python -m pytest -q tests                  # 테스트 (네트워크 불필요)
+```
+
+웹 화면에서 "예시 원고"를 고르고 "검토 시작"을 누르면 된다. 예시는 세 편이다.
+
+| 예시 | 내용 | 보여 주는 것 |
+|---|---|---|
+| `us-inflation-oct` | 미국 물가·고용 해설 | 수치 오기, 용어 오역(trade services), 인과 단정, 투자 권유 |
+| `kr-macro-oct` | 한국 물가·성장 해설 | 한국 통계(OECD·FRED 수록분) 대조 |
+| `proposal-mock` | 가상의 컨설팅 제안서 | 규칙 묶음을 바꾸면 다른 문서를 검토한다(본문 12주 ↔ 단계 합계 14주) |
+
+`samples/`와 `eval/cases/`의 원고는 전부 **시연용으로 새로 쓴 가상 원고**이며 일부러 오류를 넣었다. 회사 내부 자료는 들어 있지 않다.
+
+## Liner API를 쓰는 곳
+
+| 단계 | Liner API | 하는 일 | 코드 |
+|---|---|---|---|
+| 주장 원장 | **Liner Model API** (`liner-mark`, Chat Completions) | 원고에서 확인할 문장을 뽑고, 수치면 어느 통계의 어느 기간·어떤 변환인지 구조화한다 | `redline/pipeline.py` `EXTRACT_SYS` |
+| 근거 수집 | **Liner Search API** (웹·학술) | 통계 목록에 없는 사실의 출처·발행일·본문을 찾는다. 확인이 안 되면 모델이 고친 검색어로 한 번 더 찾는다 | `redline/liner.py` `search()` |
+| 근거 판정 | **Liner Model API** | 검색 결과에 적힌 내용만으로 일치·불일치·확인 불가를 판정하고 고칠 문장을 쓴다 | `redline/pipeline.py` `JUDGE_SYS` |
+| 규칙 검토 | **Liner Model API** | 규칙 묶음을 적용해 위반한 구절과 수정 제안을 낸다 | `redline/pipeline.py` `RULES_SYS` |
+
+검토 한 번에 모델 4~12회, 검색 2~10회를 쓴다(화면과 보고서에 호출 횟수가 표시된다). 모델은 환경 변수 `REDLINE_MODEL`로 바꿀 수 있다.
+
+수치 대조는 Liner가 아니라 통계 원자료로 한다. 모델과 검색은 "올해 9월 근원 PCE가 몇 %였는지"를 믿을 만하게 답하지 못하기 때문이다. Liner 모델이 **무엇을 어느 통계로 확인할지** 정하고, 계산은 코드가 한다.
 
 ## 얼마나 잡는가 — 오류 심기 실험
 
-통계 원자료로 참인 문장을 만들고 그 사이에 오류를 심은 원고 16편을 돌린 결과다(2026-11-20 실행, 전문은 [`eval/RESULTS.md`](eval/RESULTS.md)).
+통계 원자료로 참인 문장을 만들고 그 사이에 오류를 심은 원고 16편을 돌린 결과다(2026-11-20 실행, 전문과 한계는 [`eval/RESULTS.md`](eval/RESULTS.md)).
 
 | 심은 것 | Redline | 같은 모델에 원고만 준 경우 |
 |---|---|---|
-| 수치 오기·기준 혼동 | 24/24 | 0/24 |
+| 수치 오기·기준 혼동(전월↔전년) | 24/24 | 0/24 |
 | 제도·정의 오류 | 8/8 | 8/8 |
 | 규칙 위반 문장 | 24/24 (규칙 번호 일치 19) | 24/24 |
 | 참인 문장을 틀렸다고 짚음 | 0/32 | 0/32 |
 | 참인 문장에 군더더기 지적 | 0/24 | 7/24 |
 
-모델은 올해 9월 물가가 몇 %였는지 모른다. 숫자는 통계 원자료로 다시 계산해야 잡힌다 — 이 실험이 보여 주는 것은 그 차이다.
-오류를 심은 사람과 도구를 만든 사람이 같고, 심은 수치는 통계 목록 안의 지표다. 한계는 `eval/RESULTS.md`에 적었다.
-
 ```bash
-.venv/bin/python eval/build.py   # 원고와 정답표 다시 만들기 (FRED)
-.venv/bin/python eval/run.py     # 실행·채점 (약 4분, Liner 모델 약 80회·검색 약 50회)
+.venv/bin/python eval/build.py   # 원고와 정답표 다시 만들기
+.venv/bin/python eval/run.py     # 실행·채점 (약 4분)
 ```
 
-## Liner API를 쓰는 곳
+**이 표를 읽을 때 알아야 할 것.** 오류를 심은 사람과 도구를 만든 사람이 같다. 심은 수치는 통계 목록 안의 지표이고, 규칙 위반 문장은 눈에 띄게 썼다. 남이 쓴 실제 원고에서는 이보다 낮게 나올 수 있다.
 
-| 단계 | API | 파일 |
-|---|---|---|
-| 주장 원장 추출, 근거 판정, 규칙 검토 | Liner Model API (`liner-mark`, Chat Completions) | `redline/liner.py`, `redline/pipeline.py` |
-| 통계 목록에 없는 사실의 출처 찾기 | Liner Search API (웹·학술) | `redline/liner.py` |
+## 할 수 있는 것과 없는 것
 
-수치 대조에 쓰는 FRED 공개 CSV는 키가 필요 없다.
+| 원고에 들어 있는 것 | 처리 |
+|---|---|
+| 통계 목록의 수치 (미국 16종, 한국 6종 — `rulepacks/series.yaml`) | 원자료로 다시 계산해 대조. 가장 믿을 만하다 |
+| 그 밖의 사실 (날짜, 발표, 정의, 인용) | Liner 검색 결과와 대조. 근거가 잡히지 않으면 "확인 불가" |
+| 해석·전망·인과 주장 | 참거짓을 가리지 않고 규칙 위반 여부만 본다 |
+
+- 한 번에 주장 14건까지, 원고 12,000자까지 본다.
+- "확인"은 근거 자료와 일치한다는 뜻이다. 최종 판단은 작성자가 한다.
+- 검색 판정은 실행마다 조금 달라질 수 있다. 수치 대조는 같은 자료면 같은 결과다.
+- OECD 수록 한국 물가지수는 기준연도를 바꿔 낸 값이라, 증가율이 공식 발표치와 0.1%p까지 어긋날 수 있어 그만큼은 일치로 본다.
+
+## 규칙 묶음 — 다른 조직·직무로 넓히기
+
+검토 규칙은 코드가 아니라 YAML 파일이다. 파일 하나를 더하면 같은 엔진이 다른 문서를 검토한다.
+
+```yaml
+# rulepacks/research.yaml (발췌)
+- id: R06
+  name: 전문용어 직역
+  check: 통계·제도 용어를 발표 기관의 정의와 다르게 일반어로 옮겼는가.
+  origin: PPI의 trade services를 '무역 서비스'로 옮겼다. 실제 뜻은 도소매 유통마진이다.
+```
+
+- `research.yaml` — 리서치·시장 분석 원고 12개 규칙
+- `proposal.yaml` — 제안서·사업계획서 6개 규칙
+- `series.yaml` — 대조할 통계 목록. 키 없이 받을 수 있는 FRED·OECD 시리즈를 한 줄씩 더하면 된다
+
+`origin`은 그 규칙이 생긴 실수다. 화면의 검토 의견 카드에 함께 나온다.
+
+## 기존 결과물과 이번에 새로 만든 것
+
+| 구분 | 내용 |
+|---|---|
+| **이번에 새로 만든 것 (2026-11-20~)** | 이 저장소의 코드 전부 — Liner 클라이언트, 검토 파이프라인, 통계 대조 모듈, 웹 화면, 보고서, 오류 심기 실험, 예시 원고, 테스트 |
+| **기존에 있던 것** | 검토 규칙의 *내용*. IFE Analytics가 리서치 브리프를 쓰며 실제로 틀린 사례에서 정리해 온 내부 체크리스트를 규칙 묶음(`research.yaml`)으로 옮겼다. 기존 코드나 내부 문서 원문은 가져오지 않았다 |
+| 기존 제품과의 관계 | IFE Analytics는 MacroLab(거시 지표)·Industry Monitor(산업 리서치)를 운영한다. Redline은 그 발행 과정의 "발행 전 검토" 단계를 위한 새 도구이며, 이 저장소는 그 제품들의 코드를 포함하지 않는다 |
+
+개발에는 AI 코딩 도구(Claude Code)를 썼다.
+
+## 구조
+
+```
+redline/
+  liner.py      Liner Model·Search API 클라이언트 (키는 LINER_API_KEY 환경 변수)
+  pipeline.py   주장 원장 → 근거 대조 → 규칙 검토
+  stats.py      통계 원자료 받기·계산·비교 (FRED, OECD)
+  report.py     마크다운 보고서
+  server.py     웹 서버 (진행 상황 스트리밍)
+  static/       화면
+rulepacks/      검토 규칙과 통계 목록 (YAML)
+samples/        시연용 가상 원고
+eval/           오류 심기 실험 (원고 생성·실행·채점·결과)
+tests/          계산·채점 규칙 테스트
+docs/           화면 캡처, 기획서, 영상 대본
+```
+
+## 자료 출처와 면책
+
+- 통계: FRED(Federal Reserve Bank of St. Louis), OECD Data Explorer. 원자료 기관은 BLS·BEA·연준·국가데이터처·한국은행.
+- Redline은 초안 검토를 돕는 도구다. 판정은 근거 자료와의 대조 결과이며 투자 자문이 아니다.

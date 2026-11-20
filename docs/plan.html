@@ -1,0 +1,102 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>Redline 기획서</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@page{size:A4;margin:15mm 15mm 14mm}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,"Noto Sans KR",sans-serif;color:#192f43;font-size:9.6pt;line-height:1.6;word-break:keep-all}
+header{display:flex;align-items:flex-end;gap:12px;border-bottom:2px solid #102b4c;padding-bottom:8px;margin-bottom:10px}
+header img{height:20px}
+h1{font-size:18pt;margin:0;color:#102b4c;letter-spacing:-.03em;line-height:1.2}
+h1 span{border-bottom:3px solid #c2182b}
+.sub{margin-left:auto;text-align:right;font-size:8.2pt;color:#61707d;line-height:1.45}
+.lede{font-size:10.6pt;color:#102b4c;font-weight:500;margin:0 0 10px;line-height:1.65}
+h2{font-size:10.4pt;color:#102b4c;margin:13px 0 5px;letter-spacing:-.01em;display:flex;gap:8px;align-items:baseline}
+h2 i{font-style:normal;font-size:7.6pt;color:#bd904c;letter-spacing:.14em;font-weight:700}
+p{margin:0 0 6px}
+ul{margin:0 0 6px;padding-left:15px} li{margin-bottom:2.5px}
+table{width:100%;border-collapse:collapse;margin:5px 0 8px;font-size:8.8pt}
+th,td{border-bottom:1px solid #dcdedb;padding:4px 6px;text-align:left;vertical-align:top}
+th{background:#f8f7f3;color:#102b4c;font-weight:600;border-top:1px solid #102b4c}
+td.n,th.n{text-align:center;white-space:nowrap}
+.red{color:#c2182b;font-weight:600}
+.box{background:#f8f7f3;border-left:3px solid #d5b578;padding:7px 10px;margin:6px 0 8px}
+.cols{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;align-items:start}
+img.shot{width:100%;border:1px solid #dcdedb;border-radius:4px}
+.cap{font-size:7.8pt;color:#61707d;margin:2px 0 0}
+.todo{background:#fff3b0;padding:0 3px;border-radius:2px}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 8px}
+.flow div{border:1px solid #dcdedb;border-top:3px solid #102b4c;padding:6px 8px;border-radius:3px;font-size:8.7pt}
+.flow b{display:block;color:#102b4c;margin-bottom:2px}
+.flow em{font-style:normal;color:#2c4a8f;font-size:7.8pt;font-weight:600}
+footer{margin-top:8px;font-size:7.6pt;color:#8a96a1;border-top:1px solid #dcdedb;padding-top:5px}
+.pb{break-before:page}
+</style></head><body>
+<header><img src="../redline/static/ife-wordmark-navy.png" alt="IFE Analytics"><h1><span>Redline</span></h1>
+<div class="sub">보고서가 나가기 전, 선임의 마지막 검토<br>라이너 .EXE-THON 2026 기획서 · IFE Analytics 이정우</div></header>
+
+<p class="lede">25년 동안 컨설팅 회사와 증권사에서 남의 보고서에 빨간 줄을 그었다. 1인 리서치 회사를 차리자, 내 원고에 빨간 줄을 그어 줄 사람이 없어졌다. Redline은 그 선임의 검토를 에이전트로 옮긴 것이다.</p>
+
+<h2><i>01 EXPERIENCE</i> 누가, 어떤 문제로, 얼마나 불편한가</h2>
+<div class="cols"><div>
+<p><b>누가.</b> 검토해 줄 선임 없이 글과 보고서를 내보내는 사람. 1인 리서치 회사, 소규모 자문사, 혼자 제안서를 쓰는 컨설턴트.</p>
+<p><b>어떤 문제.</b> 컨설팅 회사와 증권사에는 보고서가 나가기 전 선임이 숫자를 다시 맞추고 단정을 지우는 단계가 있다. 그 단계가 실수를 막는다. 혼자 일하면 쓴 사람이 곧 검토자여서, 자기가 쓴 숫자를 자기 눈으로는 못 잡는다.</p>
+<p><b>직접 겪은 실수.</b> 생산자물가의 <i>trade services</i>를 "무역 서비스"로 옮겨 썼다(실제 뜻은 도소매 유통마진). 단가가 내렸다는 사실로 총지출이 줄었다고 썼다. 전월 대비와 전년 대비를 한 문단에 섞었다. 이런 실수를 하나씩 적어 온 목록이 12개 규칙이 됐다.</p>
+</div><div>
+<p><b>얼마나.</b></p>
+<ul>
+<li>네이버 프리미엄 콘텐츠에 국제경제·금융 분석 240편 이상 발행, 주 3회 발행 주기</li>
+<li>글 한 편에 확인할 수치·사실이 10~20개. 통계 사이트와 원문을 하나씩 열어 대조하는 데 <span class="todo">편당 ○○분 (대표 확인)</span></li>
+<li>틀린 숫자 하나가 발행되면 유료 구독자의 신뢰를 잃는다. 정정은 발행보다 비싸다</li>
+</ul>
+<div class="box">범용 AI에 "틀린 곳을 찾아 달라"고 하면 되지 않나? 실험해 보니 모델은 올해 9월 물가가 몇 %였는지 모른다. 원고에 심은 수치 오류 24건 중 <b>0건</b>을 잡았다. 숫자는 장부를 직접 펴야 잡힌다.</div>
+</div></div>
+
+<h2><i>02 .EXE</i> 에이전트의 해결 방식 — 선임이 하던 세 가지를 그대로</h2>
+<div class="flow">
+<div><b>① 주장 원장</b>원고에서 사실로 확인할 문장만 뽑는다. 수치면 어느 통계의 어느 달, 전월 대비인지 전년 대비인지까지 적는다.<br><em>Liner Model API</em></div>
+<div><b>② 근거 대조</b>수치는 통계 원자료(FRED·OECD)에서 값을 받아 <b>다시 계산</b>한다. 그 밖의 사실은 출처를 찾아 대조하고, 안 잡히면 검색어를 고쳐 다시 찾는다.<br><em>Liner Search API + Liner Model API</em></div>
+<div><b>③ 규칙 검토</b>실수에서 나온 규칙으로 인과 단정, 일부를 전부로 쓴 문장, 투자 권유를 짚고 고칠 문장을 쓴다. 규칙마다 "이 규칙이 생긴 실수"가 붙는다.<br><em>Liner Model API</em></div>
+</div>
+<div class="cols"><div>
+<img class="shot" src="screen-research.png" alt="">
+<p class="cap">원고 위에 표시가 붙고, 오른쪽 카드에 근거·계산식·수정 제안·출처가 나온다. 붉은 물결 = 사실 불일치, 붉은 실선 = 규칙 위반, 녹색 = 확인.</p>
+</div><div>
+<p><b>Liner API 활용.</b> 필요한 키는 Liner 키 하나다.</p>
+<table><tr><th>기능</th><th>Liner API</th></tr>
+<tr><td>확인할 문장 추출·구조화</td><td>Model (<code>liner-mark</code>)</td></tr>
+<tr><td>출처 찾기 (웹·학술, 재검색)</td><td>Search</td></tr>
+<tr><td>검색 결과만으로 판정, 수정문 작성</td><td>Model</td></tr>
+<tr><td>규칙 적용, 총평</td><td>Model</td></tr></table>
+<p>역할을 나눴다. Liner 모델은 <b>무엇을 어느 자료로 확인할지</b> 정하고 판정을 글로 쓴다. Liner 검색은 근거를 가져온다. 숫자 계산은 코드가 한다. 검토 한 번에 모델 4~12회, 검색 2~10회, 비용은 몇 센트다.</p>
+</div></div>
+
+<div class="pb"></div>
+<h2><i>03 IMPACT</i> 문제 해결 입증 — 오류 심기 실험</h2>
+<p>통계 원자료로 참인 문장을 만들고 그 사이에 오류를 심은 원고 16편을 돌렸다. 정답표와 채점 스크립트는 저장소에 있고 누구나 다시 돌릴 수 있다(약 4분).</p>
+<table><tr><th>심은 것</th><th class="n">Redline</th><th class="n">같은 모델에 원고만 준 경우</th></tr>
+<tr><td>수치 오기·기준 혼동(전월 대비 값을 전년 대비로)</td><td class="n red">24 / 24</td><td class="n">0 / 24</td></tr>
+<tr><td>제도·정의 오류 (Liner 검색으로 대조)</td><td class="n">8 / 8</td><td class="n">8 / 8</td></tr>
+<tr><td>규칙 위반 문장</td><td class="n">24 / 24</td><td class="n">24 / 24</td></tr>
+<tr><td>참인 문장을 틀렸다고 짚음 (오경보)</td><td class="n">0 / 32</td><td class="n">0 / 32</td></tr>
+<tr><td>참인 문장에 군더더기 지적</td><td class="n red">0 / 24</td><td class="n">7 / 24</td></tr></table>
+<p><b>한계를 숨기지 않는다.</b> 오류를 심은 사람과 도구를 만든 사람이 같다. 심은 수치는 통계 목록(미국 16종·한국 6종) 안의 지표이고, 규칙 위반 문장은 눈에 띄게 썼다. 남이 쓴 실제 원고에서는 이보다 낮게 나올 수 있다. 목록 밖 수치는 검색 판정에 의존하며 "확인 불가"로 남는 경우가 있다.</p>
+
+<h2><i>04 SCALE</i> 다른 조직과 직무로 넓히기</h2>
+<div class="cols"><div>
+<p><b>규칙은 코드가 아니라 파일이다.</b> 규칙 묶음 하나(YAML)를 더하면 같은 엔진이 다른 문서를 검토한다. 저장소에 제안서용 묶음을 함께 넣었다. 가상의 제안서에서 "본문은 12주, 단계 합계는 14주"를 잡는다.</p>
+<table><tr><th>조직·직무</th><th>규칙 묶음에 담을 노하우</th><th>대조할 자료</th></tr>
+<tr><td>증권사 리서치</td><td>준법 문구, 목표가 근거, 추정과 실적 구분</td><td>공시·실적 통계</td></tr>
+<tr><td>컨설팅·영업</td><td>범위·제외 항목, 효과 수치의 산식, 일정 합계</td><td>시장 통계</td></tr>
+<tr><td>홍보·IR</td><td>확인 안 된 실적, 전망성 문구, 수치 단위</td><td>자사 공시</td></tr>
+<tr><td>공공·행정</td><td>법령 조항 인용, 기준일, 통계 출처</td><td>법령·국가통계</td></tr></table>
+</div><div>
+<p><b>줄어드는 시간과 비용.</b> 선임의 검토 한 번이 몇 센트와 1분 안팎으로 바뀐다. 선임이 있는 조직에서는 선임이 "틀린 숫자 찾기"가 아니라 논리와 판단에 시간을 쓰게 된다.</p>
+<p><b>퇴직자의 노하우를 남기는 방법.</b> 규칙마다 "이 규칙이 생긴 실수"를 적는다. 베테랑이 떠나도 왜 그렇게 검토했는지가 파일로 남는다.</p>
+<p><b>다음 단계.</b> 한국 통계 확대(한국은행·국가통계), 긴 문서 구간 검토, 조직별 규칙 묶음 편집 화면. IFE Analytics는 자사 발행 과정의 발행 전 관문으로 먼저 쓴다.</p>
+</div></div>
+
+<h2><i>05</i> 기존 결과물과 이번에 새로 만든 것</h2>
+<table><tr><th style="width:26%">이번에 새로 만든 것</th><td>저장소의 코드 전부 — 검토 파이프라인, 통계 대조, 웹 화면, 보고서, 오류 심기 실험, 예시 원고(전부 가상), 테스트. 개발 기간 2026-11-20~25, AI 코딩 도구 사용.</td></tr>
+<tr><th>기존에 있던 것</th><td>검토 규칙의 내용(리서치를 쓰며 틀린 사례를 적어 온 체크리스트). 기존 코드와 내부 문서 원문은 가져오지 않았다. IFE Analytics의 기존 제품(MacroLab·Industry Monitor) 코드는 포함하지 않는다.</td></tr></table>
+<footer>IFE Analytics · www.ifeanalytics.com · github.com/IFEAnalytics/redline · Redline은 초안 검토를 돕는 도구이며 투자 자문이 아니다. 통계: FRED, OECD.</footer>
+</body></html>
