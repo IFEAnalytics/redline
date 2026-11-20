@@ -156,7 +156,7 @@ def render(s: dict, rows: list[dict]) -> str:
            f"| └ 규칙 번호까지 일치 | {pct(s['rule_exact'])} | — |",
            f"| 제도·정의 오류 (Liner 검색으로 대조) | {pct(s['fact_search'])} | {pct(b['fact_search'])} |",
            f"| 참인 통계 문장을 틀렸다고 잘못 짚음(오경보) | {pct(s['control_false_alarm'])} | {pct(b['control_false_alarm'])} |",
-           f"| 참인 통계 문장에 규칙 위반 표시를 붙임(군더더기 지적) | {pct(s['control_marked'])} | {pct(b['control_marked'])} |",
+           f"| 맞는 통계 문장에 다른 지적을 붙임(범용 AI의 경우 대부분 '확인할 수 없으니 직접 대조하라') | {pct(s['control_marked'])} | {pct(b['control_marked'])} |",
            f"| 참인 제도·정의 문장을 틀렸다고 잘못 짚음 | {pct(s['search_false_alarm'])} | {pct(b['search_false_alarm'])} |",
            f"| 참인 제도·정의 문장을 Liner 검색으로 '확인' | {pct(s['search_confirmed'])} | — |",
            f"| 참인 문장을 통계 원자료로 '확인' | {pct(s['control_confirmed'])} | — |", "",
