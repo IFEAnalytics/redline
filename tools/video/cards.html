@@ -1,0 +1,68 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:1920px;height:1080px;overflow:hidden;font-family:Inter,"Noto Sans KR",sans-serif;color:#192f43;background:#f8f7f3}
+.scene{display:none;width:1920px;height:1080px;padding:110px 150px 190px}.scene.on{display:flex;flex-direction:column;justify-content:center}
+.dark{background:#0b203a;color:#fff}
+.fade{opacity:0;transform:translateY(14px);transition:opacity .9s,transform .9s}.fade.in{opacity:1;transform:none}
+.big{font-size:64px;font-weight:700;line-height:1.5;letter-spacing:-.03em}
+.dim{color:#9fb0c3}
+.logo{font-size:150px;font-weight:700;letter-spacing:-.04em;position:relative;display:inline-block;align-self:flex-start}
+.logo::after{content:"";position:absolute;left:-8px;right:-14px;bottom:8px;height:14px;background:#c2182b;transform:rotate(-1.2deg) scaleX(0);transform-origin:left;transition:transform .8s .3s;border-radius:6px}
+.logo.in::after{transform:rotate(-1.2deg) scaleX(1)}
+.tag{font-size:40px;margin-top:26px;color:#d5b578}
+h2{font-size:30px;letter-spacing:.14em;color:#bd904c;margin:0 0 26px;font-weight:700}
+.cols{display:grid;grid-template-columns:1.25fr .75fr;gap:60px;align-items:center}
+pre{margin:0;background:#fff;border:1px solid #dcdedb;border-radius:14px;padding:34px 40px;font-family:"IBM Plex Mono","Noto Sans KR",monospace;font-size:27px;line-height:1.75;box-shadow:0 10px 40px rgba(16,43,76,.08);white-space:pre-wrap}
+pre .k{color:#8a96a1}pre .r{color:#c2182b;font-weight:500}pre .blk{display:block;padding:6px 14px;margin:0 -14px;border-radius:8px;transition:background .6s}pre .blk.hot{background:#fbe6e8}
+.count{font-size:230px;font-weight:700;color:#102b4c;line-height:1;letter-spacing:-.05em}.count small{display:block;font-size:40px;font-weight:500;color:#61707d;letter-spacing:0;margin-top:16px;line-height:1.4}
+table{border-collapse:collapse;width:100%;font-size:38px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 10px 40px rgba(16,43,76,.08)}
+th,td{padding:24px 34px;text-align:left;border-bottom:1px solid #dcdedb}th{background:#102b4c;color:#fff;font-weight:600;font-size:32px}
+td.n,th.n{text-align:center;width:330px}tr{transition:background .6s}tr.hot{background:#fff6dc}td.n b{font-size:48px;color:#102b4c}tr.hot td.red b{color:#c2182b}
+.note{font-size:28px;color:#61707d;margin-top:26px}
+.close img{height:64px;align-self:flex-start;margin-bottom:60px;filter:brightness(0) invert(1)}
+.api{font-family:"IBM Plex Mono",monospace;font-size:34px;color:#9fb0c3;margin-top:70px;line-height:1.7}
+</style></head><body>
+<div class="scene dark" id="title">
+  <div class="big fade">보고서가 나가기 전,</div>
+  <div class="big fade">선임은 초안에 <span style="color:#ff6b7a">빨간 줄</span>을 긋습니다.</div>
+  <div class="big fade dim" style="font-size:46px;margin-top:40px">숫자를 다시 맞추고, 근거 없는 단정을 지웁니다.</div>
+</div>
+<div class="scene" id="rules">
+  <h2>RULEPACKS / RESEARCH.YAML</h2>
+  <div class="cols"><pre><span class="blk"><span class="k">- id:</span> R06
+  <span class="k">name:</span> 전문용어 직역
+  <span class="k">origin:</span> <span class="r">PPI의 trade services를 '무역 서비스'로 옮겼다.</span></span><span class="blk"><span class="k">- id:</span> R02
+  <span class="k">name:</span> 기준 시점 누락·혼동
+  <span class="k">origin:</span> <span class="r">전월 대비와 전년 대비를 섞어 썼다.</span></span><span class="blk"><span class="k">- id:</span> R05
+  <span class="k">name:</span> 비율로 총량을 말함
+  <span class="k">origin:</span> <span class="r">단가가 내렸다는 사실로 총지출이 줄었다고 썼다.</span></span></pre>
+  <div class="count fade">12<small>틀릴 때마다 적어 온<br>검토 규칙</small></div></div>
+</div>
+<div class="scene" id="results">
+  <h2>오류 심기 실험 · 원고 16편</h2>
+  <table><tr><th>심은 것</th><th class="n">Redline</th><th class="n">범용 AI에 원고만</th></tr>
+  <tr><td>틀린 수치 (수치 오기·전월↔전년 혼동)</td><td class="n red"><b>24 / 24</b></td><td class="n"><b>0 / 24</b></td></tr>
+  <tr><td>틀린 제도·정의</td><td class="n"><b>8 / 8</b></td><td class="n"><b>8 / 8</b></td></tr>
+  <tr><td>규칙 위반 문장</td><td class="n"><b>24 / 24</b></td><td class="n"><b>24 / 24</b></td></tr>
+  <tr><td>맞는 문장을 틀렸다고 잘못 짚음</td><td class="n"><b>0 / 32</b></td><td class="n"><b>0 / 32</b></td></tr></table>
+  <div class="note">범용 AI = 같은 Liner 모델에 원고만 주고 "틀린 곳을 짚어 달라"고 물은 경우 · 재현: python eval/run.py</div>
+</div>
+<div class="scene dark close" id="close">
+  <img src="../../redline/static/ife-wordmark-navy.png" alt="">
+  <div class="logo">Redline</div>
+  <div class="tag fade">선임이 없는 자리에, 선임의 마지막 검토를.</div>
+  <div class="api fade">Liner Model API · Liner Search API<br>github.com/IFEAnalytics/redline</div>
+</div>
+<script>
+const q = new URLSearchParams(location.search), id = q.get("scene"), dur = +q.get("dur") || 12;
+const sc = document.getElementById(id); sc.classList.add("on");
+const at = (s, f) => setTimeout(f, s * 1000);
+document.fonts.ready.then(() => {
+  if (id === "title") sc.querySelectorAll(".fade").forEach((e, i) => at(0.5 + i * dur * 0.3, () => e.classList.add("in")));
+  if (id === "rules") { const b = sc.querySelectorAll(".blk"); b.forEach((e, i) => at(dur * (0.12 + i * 0.16), () => { b.forEach((x) => x.classList.remove("hot")); e.classList.add("hot"); }));
+    at(dur * 0.6, () => { b.forEach((x) => x.classList.remove("hot")); sc.querySelector(".count").classList.add("in"); }); }
+  if (id === "results") { const r = sc.querySelectorAll("tr"); at(dur * 0.22, () => r[1].classList.add("hot")); at(dur * 0.82, () => { r[1].classList.remove("hot"); r[4].classList.add("hot"); }); }
+  if (id === "close") { at(dur * 0.45, () => sc.querySelector(".logo").classList.add("in")); sc.querySelectorAll(".fade").forEach((e, i) => at(dur * (0.5 + i * 0.15), () => e.classList.add("in"))); }
+});
+</script></body></html>

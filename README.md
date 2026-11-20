@@ -47,6 +47,7 @@ cp .env.example .env            # LINER_API_KEY=... 한 줄만 채운다
 | 근거 수집 | **Liner Search API** (웹·학술) | 통계 목록에 없는 사실의 출처·발행일·본문을 찾는다. 확인이 안 되면 모델이 고친 검색어로 한 번 더 찾는다 | `redline/liner.py` `search()` |
 | 근거 판정 | **Liner Model API** | 검색 결과에 적힌 내용만으로 일치·불일치·확인 불가를 판정하고 고칠 문장을 쓴다 | `redline/pipeline.py` `JUDGE_SYS` |
 | 규칙 검토 | **Liner Model API** | 규칙 묶음을 적용해 위반한 구절과 수정 제안을 낸다 | `redline/pipeline.py` `RULES_SYS` |
+| 데모 영상 해설 | **Liner Model API** 음성 합성 (`/audio/speech`) | 대본을 한국어 해설 음성으로 만든다 | `tools/video/tts.py` |
 
 검토 한 번에 모델 4~12회, 검색 2~10회를 쓴다(화면과 보고서에 호출 횟수가 표시된다). 모델은 환경 변수 `REDLINE_MODEL`로 바꿀 수 있다.
 
@@ -132,6 +133,7 @@ samples/        시연용 가상 원고
 eval/           오류 심기 실험 (원고 생성·실행·채점·결과)
 tests/          계산·채점 규칙 테스트
 docs/           화면 캡처, 기획서, 영상 대본
+tools/video/    데모 영상 만들기 (해설 음성·화면 녹화·자막 합성)
 ```
 
 ## 자료 출처와 면책
